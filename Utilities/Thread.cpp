@@ -2002,13 +2002,13 @@ void thread_ctrl::detect_cpu_layout()
 	}
 }
 
-u16 thread_ctrl::get_affinity_mask(thread_class group)
+u32 thread_ctrl::get_affinity_mask(thread_class group)
 {
 	detect_cpu_layout();
 
 	if (const auto thread_count = std::thread::hardware_concurrency())
 	{
-		const u16 all_cores_mask = thread_count < 16 ? (u16)(~(UINT16_MAX << thread_count)): UINT16_MAX;
+		const u32 all_cores_mask = thread_count < 32 ? (u32)(~(UINT32_MAX << thread_count)): UINT32_MAX;
 
 		switch (g_native_core_layout)
 		{
@@ -2019,20 +2019,60 @@ u16 thread_ctrl::get_affinity_mask(thread_class group)
 		}
 		case native_core_arrangement::amd_ccx:
 		{
-			u16 spu_mask, ppu_mask, rsx_mask;
-			if (thread_count >= 16)
+			const auto system_id = utils::get_system_info();
+			u32 spu_mask, ppu_mask, rsx_mask;
+			if (thread_count == 32)
 			{
-				// Threadripper, R7
-				// Assign threads 8-16
-				// It appears some windows code is bound to lower core addresses, binding 8-16 is alot faster than 0-7
-				ppu_mask = spu_mask = 0b1111111100000000;
-				rsx_mask = all_cores_mask;
+				// R9 3950X
+				ppu_mask = 0b1111110000000000000000000000;
+				spu_mask = 0b000000001111111100000000000000;
+				rsx_mask = 0b11111100000000;
+			}
+			else if (thread_count == 24)
+			{
+				// R9 3900X
+				// Assign threads 17-24
+				//all_cores_mask;
+				ppu_mask = 0b111111000000000000000000;
+				spu_mask = 0b111111000000000000;
+				rsx_mask = 0b111111000000;
+			}
+			else if (thread_count == 16)
+			{
+				if (system_id.find("3700X") != std::string::npos || system_id.find("3800X") != std::string::npos)
+				{
+					// R7 zen2 3700/3800 (x)
+					// Assign threads 1-16
+					ppu_mask = 0b11110000;
+					spu_mask = 0b1111111100000000;
+					rsx_mask = 0b1111;
+				}
+				else
+				{
+					// R7 zen & zen+
+					// Assign threads 3-16
+					// It appears some windows code is bound to lower core addresses, binding 8-16 is alot faster than 0-7
+					ppu_mask = spu_mask = 0b1111111100000000;
+					rsx_mask = 0b111100;
+				}
 			}
 			else if (thread_count == 12)
 			{
-				// 1600/2600 (x)
-				ppu_mask = spu_mask = 0b111111000000;
-				rsx_mask = all_cores_mask;
+				if (system_id.find("3600") != std::string::npos)
+				{
+					// R5 3600 (x)
+					// Assign threads 1-12
+					ppu_mask = 0b111000;
+					spu_mask = 0b111111000000;
+					rsx_mask = 0b111;
+				}
+				else
+				{
+					// R5 1600/2600 (x)
+					// Assign threads 3-12
+					ppu_mask = spu_mask = 0b111111000000;
+					rsx_mask = 0b111100;
+				}
 			}
 			else
 			{
@@ -2077,7 +2117,7 @@ u16 thread_ctrl::get_affinity_mask(thread_class group)
 		}
 	}
 
-	return UINT16_MAX;
+	return UINT32_MAX;
 }
 
 void thread_ctrl::set_native_priority(int priority)
@@ -2113,7 +2153,7 @@ void thread_ctrl::set_native_priority(int priority)
 #endif
 }
 
-void thread_ctrl::set_thread_affinity_mask(u16 mask)
+void thread_ctrl::set_thread_affinity_mask(u32 mask)
 {
 #ifdef _WIN32
 	HANDLE _this_thread = GetCurrentThread();

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "types.h"
 #include "Atomic.h"
@@ -18,7 +18,7 @@
 [[noreturn]] void catch_all_exceptions();
 
 // Hardware core layout
-enum class native_core_arrangement : u32
+enum class native_core_arrangement : u64
 {
 	undefined,
 	generic,
@@ -26,7 +26,7 @@ enum class native_core_arrangement : u32
 	amd_ccx
 };
 
-enum class thread_class : u32
+enum class thread_class : u64
 {
 	general,
 	rsx,
@@ -258,13 +258,13 @@ public:
 	static void detect_cpu_layout();
 
 	// Returns a core affinity mask. Set whether to generate the high priority set or not
-	static u16 get_affinity_mask(thread_class group);
+	static u32 get_affinity_mask(thread_class group);
 
 	// Sets the native thread priority
 	static void set_native_priority(int priority);
 
 	// Sets the preferred affinity mask for this thread
-	static void set_thread_affinity_mask(u16 mask);
+	static void set_thread_affinity_mask(u32 mask);
 
 	// Spawn a detached named thread
 	template <typename F>
