@@ -14,13 +14,13 @@
 
 #define CMD_DEBUG 0
 
-cfg::bool_entry g_cfg_rsx_write_color_buffers(cfg::root.video, "Write Color Buffers");
-cfg::bool_entry g_cfg_rsx_write_depth_buffer(cfg::root.video, "Write Depth Buffer");
-cfg::bool_entry g_cfg_rsx_read_color_buffers(cfg::root.video, "Read Color Buffers");
-cfg::bool_entry g_cfg_rsx_read_depth_buffer(cfg::root.video, "Read Depth Buffer");
+cfg::bool_entry g_cfg_rsx_write_color_buffers(cfg::root.video, "Write color buffers");
+cfg::bool_entry g_cfg_rsx_write_depth_buffer(cfg::root.video, "Write depth buffer");
+cfg::bool_entry g_cfg_rsx_read_color_buffers(cfg::root.video, "Read color buffers");
+cfg::bool_entry g_cfg_rsx_read_depth_buffer(cfg::root.video, "Read depth buffer");
 cfg::bool_entry g_cfg_rsx_log_programs(cfg::root.video, "Log shader programs");
 cfg::bool_entry g_cfg_rsx_vsync(cfg::root.video, "VSync");
-cfg::bool_entry g_cfg_rsx_3dtv(cfg::root.video, "3D Monitor");
+cfg::bool_entry g_cfg_rsx_3dtv(cfg::root.video, "3D monitor");
 cfg::bool_entry g_cfg_rsx_debug_output(cfg::root.video, "Debug output");
 cfg::bool_entry g_cfg_rsx_overlay(cfg::root.video, "Debug overlay");
 

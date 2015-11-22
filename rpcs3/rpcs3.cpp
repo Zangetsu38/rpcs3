@@ -82,7 +82,7 @@ cfg::map_entry<std::function<std::shared_ptr<MouseHandlerBase>()>> g_cfg_mouse_h
 	{ "Basic", PURE_EXPR(std::make_shared<BasicMouseHandler>()) },
 });
 
-cfg::map_entry<std::function<std::shared_ptr<PadHandlerBase>()>> g_cfg_pad_handler(cfg::root.io, "Pad", "Keyboard",
+cfg::map_entry<std::function<std::shared_ptr<PadHandlerBase>()>> g_cfg_pad_handler(cfg::root.io, "Controller", "Keyboard",
 {
 	{ "Null", PURE_EXPR(std::make_shared<NullPadHandler>()) },
 	{ "Keyboard", PURE_EXPR(std::make_shared<KeyboardPadHandler>()) },
@@ -91,12 +91,12 @@ cfg::map_entry<std::function<std::shared_ptr<PadHandlerBase>()>> g_cfg_pad_handl
 #endif
 });
 
-cfg::map_entry<std::function<std::shared_ptr<GSRender>()>> g_cfg_gs_render(cfg::root.video, "Renderer", "OpenGL",
+cfg::map_entry<std::function<std::shared_ptr<GSRender>()>> g_cfg_gs_render(cfg::root.video, "Rendering API", "OpenGL",
 {
 	{ "Null", PURE_EXPR(std::make_shared<NullGSRender>()) },
 	{ "OpenGL", PURE_EXPR(std::make_shared<GLGSRender>()) },
 #ifdef _MSC_VER
-	{ "DX12", PURE_EXPR(std::make_shared<D3D12GSRender>()) },
+	{ "DirectX 12", PURE_EXPR(std::make_shared<D3D12GSRender>()) },
 	{ "Vulkan", PURE_EXPR(std::make_shared<VKGSRender>()) },
 #endif
 });
