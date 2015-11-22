@@ -1,0 +1,442 @@
+/* 
+Dark Orange (Hollow) Theme for RPCS3 
+by Zangetsu @ https://github.com/Zangetsu38
+v3 06/07/2018
+*/
+
+/*
+Color Scheme
+
+- Red
+#ff0000
+
+- Yellow
+#f0ff00
+
+- Orange
+#fdaf00
+
+- Dark
+#323232
+#000000
+#242424
+*/
+
+
+/* Every widget */
+QWidget {
+	font-family: SCE-PS3 Matisse LATIN;
+	font-size: 8.25pt;
+
+	color: #f0ff00;
+	background: transparent;
+	alternate-background-color: transparent;
+}
+
+
+/* Debugger: Sets font-family to default (any invalid value could be provided) */
+#debugger QListWidget, #debugger QTextEdit {
+	font-family: none;
+}
+
+
+/* Log+TTY: Use flat dark color background with default font for better readability */
+#log_frame, #tty_frame {
+	background: transparent;
+	font-size: 8.50pt;
+	font-family: none;
+}
+
+
+/* Debugger: Restore original font size */
+#debugger QListWidget, #debugger QTextEdit {
+	font-size: 9.50pt;
+}
+
+
+/* LLE: Style QListWidget checkboxes (QListWidget) */
+#lleList::indicator {
+	border: 0.05em solid #fdaf00;
+}
+#lleList::indicator::unchecked {
+	background-color: #323232;
+}
+#lleList::indicator::checked {
+	background-color: #fdaf00;
+}
+#lleList::indicator::disabled {
+	background-color: #242424;
+}
+#lleList::item::selected {
+	color: #fdaf00;
+}
+
+
+/* Mouse Tooltips */
+QToolTip {
+	background-color: #242424;
+	color: #fdaf00;
+	border: 0.10em solid #000000;
+}
+
+
+/* CG Disasm: background-image doesn't work, use static color */
+QWidget#cg_disasm {
+	background: #242424;
+}
+
+
+/* Main Window, Dialogs and Trophy Manager which isn't a dialog */
+QDialog, QWidget#trophy_manager, QMainWindow#main_window  {
+	border-image: url("GuiConfigs/Dark Orange (Hollow)-background.jpg");
+}
+
+
+/* Table headers */
+QHeaderView::section {
+	background: transparent;
+	color: #f0ff00;
+	padding-left: 0.15em;
+	padding-top: 0.15em;
+	padding-bottom: 0.10em;
+	border: none;
+}
+
+
+
+QTabBar::tab {
+	color: #f0ff00;
+	border: 0.0625em solid #f0ff00;
+	border-bottom-style: none;
+	background: transparent;
+	padding-left: 1em;
+	padding-right: 1em;
+	padding-top: 0.25em;
+	padding-bottom: 0.25em;
+	margin-right: -0.125em;
+	border-top-left-radius: 0.25em;
+	border-top-right-radius: 0.25em;
+}
+QTabBar::tab:last {
+	margin-right: 0em;
+}
+QTabBar::tab::selected {
+	background: #323232;
+	color: #fdaf00;
+	border-bottom-style: solid;
+}
+
+/* Settings Dialog: Tabs */
+QTabBar#tab_bar_settings {
+	border-bottom: 0.05em solid #f0ff00;
+}
+QTabBar::tab#tab_bar_settings {
+	background: transparent;
+	width: 5.20em;
+	padding-left: 0.50em;
+	padding-right: 0.50em;
+	padding-top: 0.65em;
+	padding-bottom: 0.65em;
+	margin-right: 0.25em;
+	font-size: 8.5pt;
+	font-weight: 550;
+}
+QTabBar::tab:last#tab_bar_settings {
+	margin-right: 0em;
+}
+QTabBar::tab:!selected:hover#tab_bar_settings {
+	background: transparent;
+	color: #fdaf00;
+}
+QTabBar::tab::selected#tab_bar_settings {
+	background: #transparent;
+	color: #fdaf00;
+	border-bottom-style: solid;
+	margin-top: 0.15em;
+}
+
+
+/* Checkboxes */
+QCheckBox::indicator {
+	border-radius: 0.1em;
+	border: 0.05em solid #b1b1b1;
+	margin-top: 0.05em;
+	width: 0.8em;
+	height: 0.8em;
+}
+QCheckBox::indicator:checked {
+	background-color: #ffa02f; /* Orange */
+}
+QCheckBox::indicator:unchecked {
+	background-color: #000000; /* Black */
+}
+QCheckBox::indicator::disabled {
+	background-color: #ff0000; /* Gray */
+}
+
+
+/* Radio Buttons */
+QRadioButton::indicator {
+	border-radius: 0.4em;
+	border: 0.05em solid #4d4940;
+	width: 0.8em;
+	height: 0.8em;
+}
+QRadioButton::indicator:checked {
+	background-color: #ffa02f; /* Orange */
+}
+QRadioButton::indicator:unchecked {
+	background-color: #000000; /* Black */
+}
+QRadioButton::indicator::disabled {
+	background-color: #ff0000; /* Gray */
+}
+
+
+/* Combo Boxes */
+QComboBox {
+	background: transparent;
+	color: #f0ff00;
+	border: 0.05em solid #1e1e1e;
+	border-radius: 0.15em;
+	padding-bottom: 0.2em;
+	padding-left: 0.4em;
+}
+QComboBox QAbstractItemView {
+	background: #323232;
+}
+QComboBox::disabled {
+	background: #828790;
+	color: #f0000;
+}
+
+
+/* Group Boxes (Settings Dialog) */
+QGroupBox {
+	margin-top: 1em;
+	border: 0.05em solid #f0ff00;
+	font-size: 8.25pt;
+}
+QGroupBox::title {
+	subcontrol-origin: margin;
+	subcontrol-position: top;
+	padding: 0.3em 0.5em 0.3em 0.5em;
+	color: #f0000;
+}
+
+
+/* Buttons */
+QPushButton {
+	background: #404040;
+}
+QPushButton::disabled {
+	background: #444444;
+}
+
+
+/* QSpinBox (Settings -> Emulator -> width/height) */
+/* QDoubleSpinBox (Pads -> Mouse Acceleration -> x/y) */ 
+QSpinBox, QDoubleSpinBox {
+	/* background: transparent; - This hits a weird bug in Qt where background flickers */
+	background-color: #ff0000;
+	border: 0.05em solid #242424;
+	border-radius: 0.10em;
+}
+
+
+/* Styles Sliders */
+QSlider::groove:horizontal {
+	border: 0.10em solid #fdaf00;
+	border-radius: 0.10em;
+}
+
+QSlider::handle:horizontal {
+	background: #f0ff00;
+	width: 0.50em;
+}
+
+QSlider#sizeSlider::groove:horizontal {
+	border: 0.10em solid #f0ff00;
+	border-radius: 0.10em;
+	height: 1.5em;
+}
+
+/* Log and Debugger borders */
+QTextEdit {
+	border: 0.05em solid #f0ff00;
+}
+
+
+/* For dock buttons to be visible */
+QDockWidget {
+	background: transparent;
+	color: #ff0000;
+	font-weight: 500;
+}
+[floating="true"] {
+	border-image: url("GuiConfigs/Dark Orange (Hollow)-background.jpg");
+}
+QDockWidget::title {
+	background: #4d4940;
+	padding-top: 0.2em;
+}
+QDockWidget::close-button, QDockWidget::float-button {
+	background-color: #323232;
+}
+
+
+/* Disable ugly borders */
+QTabWidget::pane {
+	border: 0em solid #242424;
+}
+
+
+/* Top menu bar */
+QMenuBar {
+	height:1.50em;
+}
+QMenuBar::item {
+	margin-right: 0.20em;
+	margin-left: 0.20em;
+	padding-left: 1.20em;
+	padding-right: 1.20em;
+}
+QMenuBar::item:selected {
+	background: #242424;
+	color: #fdaf00;
+}
+
+
+QMenu {
+	background: #323232;
+	color: #f0ff00;
+}
+QMenu::item {
+	padding-left: 1.5em;
+	padding-right: 0.75em;
+	padding-top: 0.25em;
+	padding-bottom: 0.25em;
+
+}
+QMenu::item:selected {
+	background: #f0ff00;
+	color: #fdaf00;
+	border: 0.05em solid #f0ff00;
+}
+QMenu::item:disabled {
+	background-color: #242424;
+	color: #ff0000;
+}
+
+
+/* Pad Settings: Controller Image */
+QLabel#l_controller { 
+	color: #242424;
+}
+
+
+/* Game Grid Font */
+QTableWidget#game_grid {
+	font-weight: 600;
+	color: #f0ff00;
+}
+
+
+/* Debug UI Settings buttons */
+QLabel#color_button {
+	background: transparent;
+}
+
+
+/* Searchbar on main Toolbar */
+QLineEdit#mw_searchbar {
+	margin-left: 0.7em;
+	color: #f0ff00;
+	font-size: 9.25pt;
+}
+
+
+/* Uniform colors in Toolbar */
+QToolButton {
+	background: transparent;
+}
+QToolButton::hover {
+	background-color: #242424;
+}
+
+
+/* Set Theme UI colors */
+QLabel#gamelist_icon_background_color {
+	color: transparent;
+}
+
+
+/* Set Windows Taskbar Thumbnail colors */
+QLabel#thumbnail_icon_color {
+	color: #4d4940;
+}
+
+
+/* Set Log colors */
+QLabel#log_level_always {
+	color: #00ffff; /* Cyan */
+}
+QLabel#log_level_fatal {
+	color: #ff00ff; /* Fuchsia */
+}
+QLabel#log_level_error {
+	color: #ff0000; /* Red */
+}
+QLabel#log_level_todo {
+	color: #ff6000; /* Orange */
+}
+QLabel#log_level_success {
+	color: #49ff00; /* Green */
+}
+QLabel#log_level_warning {
+	color: #ffff00; /* Yellow */
+}
+QLabel#log_level_notice {
+	color: #ffffff; /* White */
+}
+QLabel#log_level_trace {
+	color: #808080; /* Gray */
+}
+QLabel#log_stack {
+	color: #ffffff; /* White */
+}
+
+/* Set TTY colors */
+#tty_frame {
+	color: #fdaf00; /* White */
+}
+
+
+/* Memory Viewer */
+QLabel#memory_viewer_address_panel {
+	color: #00cbff; /* Font Color: Blue */
+}
+QLabel#memory_viewer_hex_panel {
+	color: #242424; /* Font Color: Grey */
+}
+QLabel#memory_viewer_ascii_panel {
+	color: #242424; /* Font Color: Grey */
+}
+
+
+/* Debugger colors */
+QLabel#debugger_frame_breakpoint {
+	color: #000000; /* Font Color: Black */
+	background-color: #ffff00; /* Yellow */
+}
+QLabel#debugger_frame_pc {
+	color: #000000; /* Font Color: Black */
+	background-color: #00ff00; /* Green */
+}
+
+
+/* Trophy Notification Popup */
+QWidget#trophy_notification_frame {
+	background-color: #fdaf00;
+	color: #242424;
+}

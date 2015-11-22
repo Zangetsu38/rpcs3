@@ -1,4 +1,4 @@
-﻿#include "game_list_frame.h"
+#include "game_list_frame.h"
 #include "qt_utils.h"
 #include "settings_dialog.h"
 #include "pad_settings_dialog.h"
@@ -30,7 +30,7 @@
 inline std::string sstr(const QString& _in) { return _in.toStdString(); }
 
 game_list_frame::game_list_frame(std::shared_ptr<gui_settings> guiSettings, std::shared_ptr<emu_settings> emuSettings, QWidget *parent)
-	: custom_dock_widget(tr("Game List"), parent), m_gui_settings(guiSettings), m_emu_settings(emuSettings)
+	: custom_dock_widget(tr("Game list"), parent), m_gui_settings(guiSettings), m_emu_settings(emuSettings)
 {
 	m_isListLayout    = m_gui_settings->GetValue(gui::gl_listMode).toBool();
 	m_Margin_Factor   = m_gui_settings->GetValue(gui::gl_marginFactor).toReal();
@@ -93,18 +93,18 @@ game_list_frame::game_list_frame(std::shared_ptr<gui_settings> guiSettings, std:
 		m_columnActs.append(new QAction(action_text, this));
 	};
 
-	AddColumn(gui::column_icon,       tr("Icon"),                  tr("Show Icons"));
-	AddColumn(gui::column_name,       tr("Name"),                  tr("Show Names"));
-	AddColumn(gui::column_serial,     tr("Serial"),                tr("Show Serials"));
+	AddColumn(gui::column_icon,       tr("Icon"),                  tr("Show icons"));
+	AddColumn(gui::column_name,       tr("Name"),                  tr("Show names"));
+	AddColumn(gui::column_serial,     tr("Serial"),                tr("Show serials"));
 	AddColumn(gui::column_firmware,   tr("Firmware"),              tr("Show Firmwares"));
-	AddColumn(gui::column_version,    tr("Version"),               tr("Show Versions"));
-	AddColumn(gui::column_category,   tr("Category"),              tr("Show Categories"));
-	AddColumn(gui::column_path,       tr("Path"),                  tr("Show Paths"));
+	AddColumn(gui::column_version,    tr("Version"),               tr("Show versions"));
+	AddColumn(gui::column_category,   tr("Category"),              tr("Show categories"));
+	AddColumn(gui::column_path,       tr("Path"),                  tr("Show paths"));
 	AddColumn(gui::column_move,       tr("PlayStation Move"),      tr("Show PlayStation Move"));
-	AddColumn(gui::column_resolution, tr("Supported Resolutions"), tr("Show Supported Resolutions"));
-	AddColumn(gui::column_sound,      tr("Sound Formats"),         tr("Show Sound Formats"));
-	AddColumn(gui::column_parental,   tr("Parental Level"),        tr("Show Parental Levels"));
-	AddColumn(gui::column_compat,     tr("Compatibility"),         tr("Show Compatibility"));
+	AddColumn(gui::column_resolution, tr("Supported resolutions"), tr("Show supported resolutions"));
+	AddColumn(gui::column_sound,      tr("Sound formats"),         tr("Show sound formats"));
+	AddColumn(gui::column_parental,   tr("Parental level"),        tr("Show parental levels"));
+	AddColumn(gui::column_compat,     tr("Compatibility"),         tr("Show compatibility"));
 
 	// Events
 	connect(m_gameList, &QTableWidget::customContextMenuRequested, this, &game_list_frame::ShowContextMenu);
@@ -758,10 +758,10 @@ void game_list_frame::ShowContextMenu(const QPoint &pos)
 	myMenu.addAction(boot);
 	QAction* configure = myMenu.addAction(tr("&Configure"));
 	QAction* pad_configure = myMenu.addAction(tr("&Configure pads"));
-	QAction* createPPUCache = myMenu.addAction(tr("&Create PPU Cache"));
+	QAction* createPPUCache = myMenu.addAction(tr("&Create PPU cache"));
 	myMenu.addSeparator();
-	QAction* renameTitle = myMenu.addAction(tr("&Rename In Game List"));
-	QAction* hide_serial = myMenu.addAction(tr("&Hide From Game List"));
+	QAction* renameTitle = myMenu.addAction(tr("&Rename in game list"));
+	QAction* hide_serial = myMenu.addAction(tr("&Hide from game list"));
 	hide_serial->setCheckable(true);
 	hide_serial->setChecked(m_hidden_list.contains(serial));
 	myMenu.addSeparator();
@@ -769,7 +769,7 @@ void game_list_frame::ShowContextMenu(const QPoint &pos)
 	QAction* removeGame = remove_menu->addAction(tr("&Remove %1").arg(qstr(currGame.category)));
 	if (gameinfo->hasCustomConfig)
 	{
-		QAction* remove_custom_config = remove_menu->addAction(tr("&Remove Custom Configuration"));
+		QAction* remove_custom_config = remove_menu->addAction(tr("&Remove custom configuration"));
 		connect(remove_custom_config, &QAction::triggered, [=]()
 		{
 			if (RemoveCustomConfiguration(currGame.serial, gameinfo, true))
@@ -780,7 +780,7 @@ void game_list_frame::ShowContextMenu(const QPoint &pos)
 	}
 	if (gameinfo->hasCustomPadConfig)
 	{
-		QAction* remove_custom_pad_config = remove_menu->addAction(tr("&Remove Custom Pad Configuration"));
+		QAction* remove_custom_pad_config = remove_menu->addAction(tr("&Remove custom pad configuration"));
 		connect(remove_custom_pad_config, &QAction::triggered, [=]()
 		{
 			if (RemoveCustomPadConfiguration(currGame.serial, gameinfo, true))
@@ -792,25 +792,25 @@ void game_list_frame::ShowContextMenu(const QPoint &pos)
 	if (fs::is_dir(cache_base_dir))
 	{
 		remove_menu->addSeparator();
-		QAction* removeShadersCache = remove_menu->addAction(tr("&Remove Shaders Cache"));
+		QAction* removeShadersCache = remove_menu->addAction(tr("&Remove shaders cache"));
 		connect(removeShadersCache, &QAction::triggered, [=]()
 		{
 			RemoveShadersCache(cache_base_dir, true);
 		});
-		QAction* removePPUCache = remove_menu->addAction(tr("&Remove PPU Cache"));
+		QAction* removePPUCache = remove_menu->addAction(tr("&Remove PPU cache"));
 		connect(removePPUCache, &QAction::triggered, [=]()
 		{
 			RemovePPUCache(cache_base_dir, true);
 		});
-		QAction* removeSPUCache = remove_menu->addAction(tr("&Remove SPU Cache"));
+		QAction* removeSPUCache = remove_menu->addAction(tr("&Remove SPU cache"));
 		connect(removeSPUCache, &QAction::triggered, [=]()
 		{
 			RemoveSPUCache(cache_base_dir, true);
 		});
-		QAction* removeAllCaches = remove_menu->addAction(tr("&Remove All Caches"));
+		QAction* removeAllCaches = remove_menu->addAction(tr("&Remove all caches"));
 		connect(removeAllCaches, &QAction::triggered, [=]()
 		{
-			if (QMessageBox::question(this, tr("Confirm Removal"), tr("Remove all caches?")) != QMessageBox::Yes)
+			if (QMessageBox::question(this, tr("Confirm removal"), tr("Remove all caches?")) != QMessageBox::Yes)
 				return;
 
 			RemoveShadersCache(cache_base_dir);
@@ -819,10 +819,10 @@ void game_list_frame::ShowContextMenu(const QPoint &pos)
 		});
 	}
 	myMenu.addSeparator();
-	QAction* openGameFolder = myMenu.addAction(tr("&Open Install Folder"));
+	QAction* openGameFolder = myMenu.addAction(tr("&Open install folder"));
 	if (gameinfo->hasCustomConfig)
 	{
-		QAction* open_config_dir = myMenu.addAction(tr("&Open Custom Config Folder"));
+		QAction* open_config_dir = myMenu.addAction(tr("&Open custom config folder"));
 		connect(open_config_dir, &QAction::triggered, [=]()
 		{
 			const std::string new_config_path = Emulator::GetCustomConfigPath(currGame.serial);
@@ -845,14 +845,14 @@ void game_list_frame::ShowContextMenu(const QPoint &pos)
 		});
 	}
 	myMenu.addSeparator();
-	QAction* checkCompat = myMenu.addAction(tr("&Check Game Compatibility"));
-	QAction* downloadCompat = myMenu.addAction(tr("&Download Compatibility Database"));
+	QAction* checkCompat = myMenu.addAction(tr("&Check game compatibility"));
+	QAction* downloadCompat = myMenu.addAction(tr("&Download compatibility database"));
 	myMenu.addSeparator();
-	QAction* editNotes = myMenu.addAction(tr("&Edit Tooltip Notes"));
+	QAction* editNotes = myMenu.addAction(tr("&Edit tooltip notes"));
 	QMenu* info_menu = myMenu.addMenu(tr("&Copy Info"));
 	QAction* copy_info = info_menu->addAction(tr("&Copy Name + Serial"));
 	QAction* copy_name = info_menu->addAction(tr("&Copy Name"));
-	QAction* copy_serial = info_menu->addAction(tr("&Copy Serial"));
+	QAction* copy_serial = info_menu->addAction(tr("&Copy serial"));
 
 	connect(boot, &QAction::triggered, [=]
 	{
@@ -1050,7 +1050,7 @@ bool game_list_frame::RemoveCustomConfiguration(const std::string& title_id, gam
 	if (!fs::is_file(config_path_new) && !fs::is_file(config_path_old))
 		return true;
 
-	if (is_interactive && QMessageBox::question(this, tr("Confirm Removal"), tr("Remove custom game configuration?")) != QMessageBox::Yes)
+	if (is_interactive && QMessageBox::question(this, tr("Confirm removal"), tr("Remove custom game configuration?")) != QMessageBox::Yes)
 		return true;
 
 	bool result = true;
@@ -1124,7 +1124,7 @@ bool game_list_frame::RemoveShadersCache(const std::string& base_dir, bool is_in
 	if (!fs::is_dir(base_dir))
 		return true;
 
-	if (is_interactive && QMessageBox::question(this, tr("Confirm Removal"), tr("Remove shaders cache?")) != QMessageBox::Yes)
+	if (is_interactive && QMessageBox::question(this, tr("Confirm removal"), tr("Remove shaders cache?")) != QMessageBox::Yes)
 		return true;
 
 	u32 caches_removed = 0;
@@ -1165,7 +1165,7 @@ bool game_list_frame::RemovePPUCache(const std::string& base_dir, bool is_intera
 	if (!fs::is_dir(base_dir))
 		return true;
 
-	if (is_interactive && QMessageBox::question(this, tr("Confirm Removal"), tr("Remove PPU cache?")) != QMessageBox::Yes)
+	if (is_interactive && QMessageBox::question(this, tr("Confirm removal"), tr("Remove PPU cache?")) != QMessageBox::Yes)
 		return true;
 
 	u32 files_removed = 0;
@@ -1206,7 +1206,7 @@ bool game_list_frame::RemoveSPUCache(const std::string& base_dir, bool is_intera
 	if (!fs::is_dir(base_dir))
 		return true;
 
-	if (is_interactive && QMessageBox::question(this, tr("Confirm Removal"), tr("Remove SPU cache?")) != QMessageBox::Yes)
+	if (is_interactive && QMessageBox::question(this, tr("Confirm removal"), tr("Remove SPU cache?")) != QMessageBox::Yes)
 		return true;
 
 	u32 files_removed = 0;
