@@ -40,11 +40,10 @@ D3D12_BLEND get_blend_factor(u16 factor)
 	case CELL_GCM_SRC_ALPHA_SATURATE: return D3D12_BLEND_SRC_ALPHA_SAT;
 	case CELL_GCM_CONSTANT_COLOR: return D3D12_BLEND_DEST_COLOR;
 	case CELL_GCM_ONE_MINUS_CONSTANT_COLOR: return D3D12_BLEND_INV_DEST_COLOR;
-	case CELL_GCM_CONSTANT_ALPHA:
-	case CELL_GCM_ONE_MINUS_CONSTANT_ALPHA:
-		break;
+	case CELL_GCM_CONSTANT_ALPHA: return D3D12_BLEND_DEST_ALPHA;
+	case CELL_GCM_ONE_MINUS_CONSTANT_ALPHA: return D3D12_BLEND_INV_DEST_ALPHA;
 	}
-	throw EXCEPTION("Invalid or unsupported blend factor (0x%x)", factor);
+	throw EXCEPTION("Invalid blend factor (0x%x)", factor);
 }
 
 D3D12_BLEND get_blend_factor_alpha(u16 factor)
@@ -62,13 +61,12 @@ D3D12_BLEND get_blend_factor_alpha(u16 factor)
 	case CELL_GCM_DST_COLOR: return D3D12_BLEND_DEST_ALPHA;
 	case CELL_GCM_ONE_MINUS_DST_COLOR: return D3D12_BLEND_INV_DEST_ALPHA;
 	case CELL_GCM_SRC_ALPHA_SATURATE: return D3D12_BLEND_SRC_ALPHA_SAT;
-	case CELL_GCM_CONSTANT_COLOR:
-	case CELL_GCM_ONE_MINUS_CONSTANT_COLOR:
-	case CELL_GCM_CONSTANT_ALPHA:
-	case CELL_GCM_ONE_MINUS_CONSTANT_ALPHA:
-		break;
+	case CELL_GCM_CONSTANT_COLOR: return D3D12_BLEND_DEST_ALPHA;
+	case CELL_GCM_ONE_MINUS_CONSTANT_COLOR: return D3D12_BLEND_INV_DEST_ALPHA;
+	case CELL_GCM_CONSTANT_ALPHA: return D3D12_BLEND_DEST_ALPHA;
+	case CELL_GCM_ONE_MINUS_CONSTANT_ALPHA: return D3D12_BLEND_INV_DEST_ALPHA;
 	}
-	throw EXCEPTION("Invalid or unsupported blend alpha factor (0x%x)", factor);
+	throw EXCEPTION("Invalid blend alpha factor (0x%x)", factor);
 }
 
 /**
