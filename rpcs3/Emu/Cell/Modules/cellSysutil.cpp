@@ -342,7 +342,8 @@ s32 cellSysutilSetBgmPlaybackExtraParam()
 
 s32 cellSysutilRegisterCallbackDispatcher()
 {
-	throw EXCEPTION("");
+	cellSysutil.todo("cellSysutilRegisterCallbackDispatcher()");
+	return CELL_OK;
 }
 
 s32 cellSysutilPacketWrite()

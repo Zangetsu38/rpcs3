@@ -4,6 +4,18 @@
 #include "Emu/CPU/CPUThread.h"
 #include "Emu/Memory/vm.h"
 
+union VSCRhdr
+{
+	u32 VSCR;
+	struct
+	{
+		u32 SAT : 1;
+		u32 X : 15;
+		u32 NJ : 1;
+		u32 Y : 15;
+	};
+};
+
 class PPUThread final : public cpu_thread
 {
 public:
@@ -19,6 +31,7 @@ public:
 	u64 GPR[32]{}; // General-Purpose Registers
 	f64 FPR[32]{}; // Floating Point Registers
 	v128 VR[32]{}; // Vector Registers
+	VSCRhdr VSCR{}; // Vector Status and Control Register
 	alignas(16) bool CR[32]{}; // Condition Registers
 	bool SO{}; // XER: Summary overflow
 	bool OV{}; // XER: Overflow

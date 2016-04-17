@@ -611,7 +611,8 @@ void cellGcmSetUserHandler(vm::ptr<void(u32)> handler)
 
 s32 cellGcmSetUserCommand()
 {
-	throw EXCEPTION("");
+	UNIMPLEMENTED_FUNC(cellGcmSys);
+	return CELL_OK;
 }
 
 void cellGcmSetVBlankHandler(vm::ptr<void(u32)> handler)
@@ -1130,7 +1131,8 @@ void cellGcmSetDefaultCommandBuffer()
 
 s32 cellGcmSetDefaultCommandBufferAndSegmentWordSize()
 {
-	throw EXCEPTION("");
+	UNIMPLEMENTED_FUNC(cellGcmSys);
+	return CELL_OK;
 }
 
 //------------------------------------------------------------------------

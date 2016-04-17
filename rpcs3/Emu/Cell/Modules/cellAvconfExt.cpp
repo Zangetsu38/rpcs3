@@ -95,7 +95,8 @@ s32 cellAudioOutSetDeviceMode()
 
 s32 cellAudioInSetDeviceMode()
 {
-	throw EXCEPTION("");
+	UNIMPLEMENTED_FUNC(cellAvconfExt);
+	return -1;
 }
 
 s32 cellAudioInRegisterDevice()

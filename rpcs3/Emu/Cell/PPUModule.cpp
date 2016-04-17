@@ -54,7 +54,7 @@ extern void ppu_execute_function(PPUThread& ppu, u32 index)
 		}
 	}
 
-	throw fmt::exception("Function not registered (index %u)" HERE, index);
+ LOG_ERROR(PPU, "Function not registered (index %u)" HERE, index);
 }
 
 extern u32 ppu_generate_id(const char* name)

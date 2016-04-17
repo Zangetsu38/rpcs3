@@ -165,6 +165,7 @@ std::vector<rsx_subresource_layout> get_subresources_layout(const rsx::texture &
 	case CELL_GCM_TEXTURE_R6G5B5:
 	case CELL_GCM_TEXTURE_G8B8:
 	case CELL_GCM_TEXTURE_X16:
+	case CELL_GCM_TEXTURE_X32_FLOAT: //catherine
 		return get_subresources_layout_impl<1, u16>(pixels, w, h, depth, layer, texture.get_exact_mipmap_count(), texture.pitch(), !is_swizzled);
 	case CELL_GCM_TEXTURE_DEPTH24_D8: // Untested
 	case CELL_GCM_TEXTURE_DEPTH24_D8_FLOAT: // Untested
@@ -214,6 +215,7 @@ void upload_texture_subresource(gsl::span<gsl::byte> dst_buffer, const rsx_subre
 	case CELL_GCM_TEXTURE_R6G5B5:
 	case CELL_GCM_TEXTURE_G8B8:
 	case CELL_GCM_TEXTURE_X16:
+	case CELL_GCM_TEXTURE_X32_FLOAT: //catherine
 	{
 		if (is_swizzled)
 			copy_unmodified_block_swizzled::copy_mipmap_level(as_span_workaround<u16>(dst_buffer), gsl::as_span<const be_t<u16>>(src_layout.data), w, h, depth, get_row_pitch_in_block<u16>(w, dst_row_pitch_multiple_of));

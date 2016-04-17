@@ -792,7 +792,7 @@ bool handle_access_violation(u32 addr, bool is_writing, x64_context* context)
 	{
 		if (op == X64OP_NONE)
 		{
-			LOG_ERROR(MEMORY, "decode_x64_reg_op(%016llxh): unsupported opcode found (%016llX%016llX)", code, *(be_t<u64>*)(code), *(be_t<u64>*)(code + 8));
+			//LOG_ERROR(MEMORY, "decode_x64_reg_op(%016llxh): unsupported opcode found (%016llX%016llX)", code, *(be_t<u64>*)(code), *(be_t<u64>*)(code + 8));
 		}
 	};
 
@@ -826,8 +826,8 @@ bool handle_access_violation(u32 addr, bool is_writing, x64_context* context)
 		if (a_size != 4 || !d_size || !i_size)
 		{
 			LOG_ERROR(MEMORY, "Invalid or unsupported instruction (op=%d, reg=%d, d_size=%lld, a_size=0x%llx, i_size=%lld)", op, reg, d_size, a_size, i_size);
-			report_opcode();
-			return false;
+			//report_opcode();
+			//return false;
 		}
 
 		switch (op)
@@ -857,8 +857,8 @@ bool handle_access_violation(u32 addr, bool is_writing, x64_context* context)
 		default:
 		{
 			LOG_ERROR(MEMORY, "Invalid or unsupported operation (op=%d, reg=%d, d_size=%lld, i_size=%lld)", op, reg, d_size, i_size);
-			report_opcode();
-			return false;
+			//report_opcode();
+			//return false;
 		}
 		}
 
@@ -874,8 +874,8 @@ bool handle_access_violation(u32 addr, bool is_writing, x64_context* context)
 		if (!d_size || !i_size)
 		{
 			LOG_ERROR(MEMORY, "Invalid or unsupported instruction (op=%d, reg=%d, d_size=%lld, a_size=0x%llx, i_size=%lld)", op, reg, d_size, a_size, i_size);
-			report_opcode();
-			return false;
+			//report_opcode();
+			//return false;
 		}
 
 		switch (op)
@@ -1086,8 +1086,8 @@ bool handle_access_violation(u32 addr, bool is_writing, x64_context* context)
 		default:
 		{
 			LOG_ERROR(MEMORY, "Invalid or unsupported operation (op=%d, reg=%d, d_size=%lld, a_size=0x%llx, i_size=%lld)", op, reg, d_size, a_size, i_size);
-			report_opcode();
-			return false;
+			//report_opcode();
+			//return false;
 		}
 		}
 

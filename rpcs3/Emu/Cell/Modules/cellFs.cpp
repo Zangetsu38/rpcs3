@@ -1029,7 +1029,8 @@ s32 cellFsChangeFileSizeByFdWithoutAllocation()
 
 s32 cellFsSetDiscReadRetrySetting()
 {
-	throw EXCEPTION("");
+	UNIMPLEMENTED_FUNC(cellFs);
+	return CELL_OK;
 }
 
 s32 cellFsRegisterConversionCallback()

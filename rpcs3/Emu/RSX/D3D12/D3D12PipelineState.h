@@ -130,7 +130,7 @@ struct D3D12Traits
 			}
 		}
 
-		fs::file(fs::get_config_dir() + "FragmentProgram" + std::to_string(ID) + ".hlsl", fs::rewrite).write(shader);
+		fs::file(fs::get_config_dir() + "/hlsl/FragmentProgram" + std::to_string(ID) + ".hlsl", fs::rewrite).write(shader);
 		fragmentProgramData.id = (u32)ID;
 	}
 
@@ -141,7 +141,7 @@ struct D3D12Traits
 		std::string shaderCode = VS.Decompile();
 		vertexProgramData.Compile(shaderCode, Shader::SHADER_TYPE::SHADER_TYPE_VERTEX);
 		vertexProgramData.vertex_shader_input_count = RSXVP.rsx_vertex_inputs.size();
-		fs::file(fs::get_config_dir() + "VertexProgram" + std::to_string(ID) + ".hlsl", fs::rewrite).write(shaderCode);
+		fs::file(fs::get_config_dir() + "/hlsl/VertexProgram" + std::to_string(ID) + ".hlsl", fs::rewrite).write(shaderCode);
 		vertexProgramData.id = (u32)ID;
 	}
 
@@ -154,7 +154,7 @@ struct D3D12Traits
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicPipelineStateDesc = {};
 
 		if (vertexProgramData.bytecode == nullptr)
-			throw EXCEPTION("Vertex program compilation failure");
+			LOG_ERROR(RSX, "Vertex program compilation failure");
 		graphicPipelineStateDesc.VS.BytecodeLength = vertexProgramData.bytecode->GetBufferSize();
 		graphicPipelineStateDesc.VS.pShaderBytecode = vertexProgramData.bytecode->GetBufferPointer();
 

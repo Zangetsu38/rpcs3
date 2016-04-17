@@ -554,7 +554,7 @@ s32 cellFontExtend(u32 a1, u32 a2, u32 a3)
 		//Something happens
 	}
 	//Something happens?
-	return CELL_OK;
+	return -1;
 }
 
 s32 cellFontRenderCharGlyphImageVertical()
@@ -587,7 +587,8 @@ s32 cellFontGraphicsGetDrawType()
 
 s32 cellFontGetKerning()
 {
-	throw EXCEPTION("");
+	UNIMPLEMENTED_FUNC(cellFont);
+	return CELL_OK;
 }
 
 s32 cellFontGetRenderScaledKerning()
@@ -622,7 +623,8 @@ s32 cellFontGetEffectWeight()
 
 s32 cellFontGetScalePixel()
 {
-	throw EXCEPTION("");
+	UNIMPLEMENTED_FUNC(cellFont);
+	return CELL_OK;
 }
 
 s32 cellFontClearFileCache()
@@ -637,7 +639,8 @@ s32 cellFontAdjustFontScaling()
 
 s32 cellFontSetupRenderScalePoint()
 {
-	throw EXCEPTION("");
+	UNIMPLEMENTED_FUNC(cellFont);
+	return CELL_OK;
 }
 
 s32 cellFontGlyphGetVerticalShift()

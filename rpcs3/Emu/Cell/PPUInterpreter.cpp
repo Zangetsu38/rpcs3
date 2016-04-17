@@ -179,12 +179,14 @@ void ppu_interpreter::TWI(PPUThread& ppu, ppu_opcode_t op)
 
 void ppu_interpreter::MFVSCR(PPUThread& ppu, ppu_opcode_t op)
 {
-	throw std::runtime_error("MFVSCR" HERE);
+	ppu.VR[op.vd].clear();
+	ppu.VR[op.vd]._u32[0] = ppu.VSCR.VSCR;
 }
 
 void ppu_interpreter::MTVSCR(PPUThread& ppu, ppu_opcode_t op)
 {
-	LOG_WARNING(PPU, "MTVSCR");
+	ppu.VSCR.VSCR = ppu.VR[op.vb]._u32[0];
+	ppu.VSCR.X = ppu.VSCR.Y = 0;
 }
 
 void ppu_interpreter::VADDCUW(PPUThread& ppu, ppu_opcode_t op)

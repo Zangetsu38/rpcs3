@@ -2,6 +2,7 @@
 #include "StrFmt.h"
 #include "Macro.h"
 #include "SharedMutex.h"
+#include "log.h"
 
 #include <unordered_map>
 #include <algorithm>
@@ -831,7 +832,7 @@ bool fs::file::open(const std::string& path, bitset_t<open_mode> mode)
 				switch (DWORD error = GetLastError())
 				{
 				case 0:
-				default: throw fmt::exception("Win32 error: %u." HERE, error);
+				default: LOG_WARNING (HLE, "Win32 error: %u." HERE, error);
 				}
 			}
 

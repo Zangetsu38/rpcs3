@@ -26,12 +26,12 @@ void Shader::Compile(const std::string &code, SHADER_TYPE st)
 	switch (st)
 	{
 	case SHADER_TYPE::SHADER_TYPE_VERTEX:
-		hr = wrapD3DCompile(code.c_str(), code.size(), "VertexProgram.hlsl", nullptr, nullptr, "main", "vs_5_0", compileFlags, 0, &bytecode, errorBlob.GetAddressOf());
+		hr = wrapD3DCompile(code.c_str(), code.size(), "/hlsl/VertexProgram.hlsl", nullptr, nullptr, "main", "vs_5_0", compileFlags, 0, &bytecode, errorBlob.GetAddressOf());
 		if (hr != S_OK)
 			LOG_ERROR(RSX, "VS build failed:%s", errorBlob->GetBufferPointer());
 		break;
 	case SHADER_TYPE::SHADER_TYPE_FRAGMENT:
-		hr = wrapD3DCompile(code.c_str(), code.size(), "FragmentProgram.hlsl", nullptr, nullptr, "main", "ps_5_0", compileFlags, 0, &bytecode, errorBlob.GetAddressOf());
+		hr = wrapD3DCompile(code.c_str(), code.size(), "/hlsl/FragmentProgram.hlsl", nullptr, nullptr, "main", "ps_5_0", compileFlags, 0, &bytecode, errorBlob.GetAddressOf());
 		if (hr != S_OK)
 			LOG_ERROR(RSX, "FS build failed:%s", errorBlob->GetBufferPointer());
 		break;

@@ -915,7 +915,7 @@ void spu_recompiler::BISL(spu_opcode_t op)
 
 void spu_recompiler::IRET(spu_opcode_t op)
 {
-	throw EXCEPTION("Unimplemented instruction");
+	LOG_ERROR(SPU, "Unimplemented instruction");
 }
 
 void spu_recompiler::BISLED(spu_opcode_t op)

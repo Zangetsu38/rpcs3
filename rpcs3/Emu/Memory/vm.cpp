@@ -234,7 +234,7 @@ namespace vm
 
 		if (!(flags & page_writable) || !(flags & page_allocated) || (flags & page_no_reservations))
 		{
-			throw EXCEPTION("Invalid page flags (addr=0x%x, size=0x%x, flags=0x%x)", addr, size, flags);
+			LOG_ERROR(MEMORY, "Invalid page flags (addr=0x%x, size=0x%x, flags=0x%x)", addr, size, flags);
 		}
 
 		// break the reservation
@@ -433,7 +433,7 @@ namespace vm
 
 		if (!size || (size | addr) % 4096)
 		{
-			throw EXCEPTION("Invalid arguments (addr=0x%x, size=0x%x)", addr, size);
+			LOG_ERROR(MEMORY, "Invalid arguments (addr=0x%x, size=0x%x)", addr, size);
 		}
 
 		const u8 flags_inv = flags_set & flags_clear;
@@ -610,7 +610,7 @@ namespace vm
 		{
 			if (used > this->size)
 			{
-				throw EXCEPTION("Unexpected memory amount used (0x%x)", used);
+				LOG_ERROR(MEMORY, "Unexpected memory amount used (0x%x)", used);
 			}
 
 			if (used + size > this->size)
@@ -882,7 +882,7 @@ namespace vm
 
 			if (context.GPR[1] < context.stack_addr)
 			{
-				throw EXCEPTION("Stack overflow (size=0x%x, align=0x%x, SP=0x%llx, stack=*0x%x)", size, align_v, old_pos, context.stack_addr);
+				LOG_ERROR(MEMORY, "Stack overflow (size=0x%x, align=0x%x, SP=0x%llx, stack=*0x%x)", size, align_v, old_pos, context.stack_addr);
 			}
 			else
 			{
@@ -903,7 +903,7 @@ namespace vm
 
 			if (context.gpr[1]._u32[3] >= 0x40000) // extremely rough
 			{
-				throw EXCEPTION("Stack overflow (size=0x%x, align=0x%x, SP=LS:0x%05x)", size, align_v, old_pos);
+				LOG_ERROR(MEMORY, "Stack overflow (size=0x%x, align=0x%x, SP=LS:0x%05x)", size, align_v, old_pos);
 			}
 			else
 			{

@@ -61,12 +61,18 @@ namespace vk
 		case rsx::surface_color_format::r5g6b5:
 			return VK_FORMAT_R5G6B5_UNORM_PACK16;
 
-		case rsx::surface_color_format::a8r8g8b8:
-			return VK_FORMAT_B8G8R8A8_UNORM;
-
 		case rsx::surface_color_format::x8r8g8b8_o8r8g8b8:
 			LOG_ERROR(RSX, "Format 0x%X may be buggy.", color_format);
 			return VK_FORMAT_B8G8R8A8_UNORM;
+
+		case rsx::surface_color_format::a8r8g8b8:
+			return VK_FORMAT_B8G8R8A8_UNORM;
+
+		case rsx::surface_color_format::b8:
+			return VK_FORMAT_R8_UNORM;
+
+		case rsx::surface_color_format::g8b8:
+			return VK_FORMAT_R8G8_UNORM;
 
 		case rsx::surface_color_format::w16z16y16x16:
 			return VK_FORMAT_R16G16B16A16_SFLOAT;
@@ -74,15 +80,17 @@ namespace vk
 		case rsx::surface_color_format::w32z32y32x32:
 			return VK_FORMAT_R32G32B32A32_SFLOAT;
 
-		case rsx::surface_color_format::b8:
+		case rsx::surface_color_format::x8b8g8r8_o8b8g8r8:
+			return VK_FORMAT_B8G8R8A8_UNORM;
+
+		case rsx::surface_color_format::a8b8g8r8:
+			return VK_FORMAT_B8G8R8A8_UNORM;
+
 		case rsx::surface_color_format::x1r5g5b5_o1r5g5b5:
 		case rsx::surface_color_format::x1r5g5b5_z1r5g5b5:
 		case rsx::surface_color_format::x8r8g8b8_z8r8g8b8:
-		case rsx::surface_color_format::g8b8:
 		case rsx::surface_color_format::x32:
-		case rsx::surface_color_format::x8b8g8r8_o8b8g8r8:
 		case rsx::surface_color_format::x8b8g8r8_z8b8g8r8:
-		case rsx::surface_color_format::a8b8g8r8:
 		default:
 			LOG_ERROR(RSX, "Surface color buffer: Unsupported surface color format (0x%x)", color_format);
 			return VK_FORMAT_B8G8R8A8_UNORM;
