@@ -150,8 +150,12 @@
 		"keyboardHandlerBox": "Some games support native keyboard input.\nBasic will work in these cases.",
 		"mouseHandlerBox": "Some games support native mouse input.\nBasic will work in these cases.",
 		"cameraBox": "Camera support is not implemented, leave this on null.",
+		"forceInitTracker": "Force initialization tracking PSMove.",
+		"forceResTracker": "Force reset tracking PSMove.\nFor game call only gemreset",
 		"cameraTypeBox": "Camera support is not implemented, leave this on unknown.",
-		"moveBox": "PlayStation Move support.\nFake: Experimental! This maps Move controls to DS4 controller mappings."
+		"moveBox": "PlayStation Move support.\nFake: Experimental! This maps Move controls to DS4 controller mappings.",
+		"moveNumberBox": "Choose the number assigned to the PlayStation Move.\nPS3 Game can request assign PSMove on different number.",
+		"moveExtBox": "Select your PS3 PSMove accessory device."
 	},
 	"network": {
 		"netStatusBox": "Leave as disconnected unless you're debugging.\nRPCS3 has no online support."

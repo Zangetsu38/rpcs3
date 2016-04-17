@@ -695,6 +695,13 @@
              </widget>
             </item>
             <item>
+             <widget class="QCheckBox" name="monitor_3d">
+              <property name="text">
+               <string>3D Monitor</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QCheckBox" name="stretchToDisplayArea">
               <property name="text">
                <string>Stretch To Display Area</string>
@@ -1216,6 +1223,16 @@
             <item>
              <widget class="QComboBox" name="moveBox"/>
             </item>
+            <item>
+             <widget class="QComboBox" name="moveNumberBox"/>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="forceResetTracker">
+              <property name="text">
+               <string>Force reset tracker</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -1243,6 +1260,13 @@
            <layout class="QVBoxLayout" name="verticalLayout_31">
             <item>
              <widget class="QComboBox" name="cameraBox"/>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="forceInitTracker">
+              <property name="text">
+               <string>Force init tracker</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

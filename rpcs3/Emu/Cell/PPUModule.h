@@ -230,6 +230,7 @@ public:
 	static const ppu_static_module cellSpudll;
 	static const ppu_static_module cellSpurs;
 	static const ppu_static_module cellSpursJq;
+	static const ppu_static_module cellSsc;
 	static const ppu_static_module cellSsl;
 	static const ppu_static_module cellSubDisplay;
 	static const ppu_static_module cellSync;
@@ -240,8 +241,8 @@ public:
 	static const ppu_static_module cellSysutilAp;
 	static const ppu_static_module cellSysutilAvc2;
 	static const ppu_static_module cellSysutilAvcExt;
-	static const ppu_static_module cellSysutilNpEula;
 	static const ppu_static_module cellSysutilMisc;
+	static const ppu_static_module cellSysutilNpEula;
 	static const ppu_static_module cellUsbd;
 	static const ppu_static_module cellUsbPspcm;
 	static const ppu_static_module cellUserInfo;
@@ -252,6 +253,7 @@ public:
 	static const ppu_static_module cellVoice;
 	static const ppu_static_module cellVpost;
 	static const ppu_static_module libad_async;
+	static const ppu_static_module libad_billboard_util;
 	static const ppu_static_module libad_core;
 	static const ppu_static_module libmedi;
 	static const ppu_static_module libmixer;

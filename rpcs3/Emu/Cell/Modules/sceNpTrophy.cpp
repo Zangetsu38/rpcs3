@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "Emu/System.h"
 #include "Emu/IdManager.h"
 #include "Emu/Cell/PPUModule.h"
@@ -897,6 +897,47 @@ error_code sceNpTrophyGetTrophyIcon(u32 context, u32 handle, s32 trophyId, vm::p
 	return CELL_OK;
 }
 
+s32 sceNpTrophy_92E0410E()
+{
+	UNIMPLEMENTED_FUNC(sceNpTrophy);
+	return CELL_OK;
+}
+
+s32 sceNpTrophy_B460AE5B()
+{
+	UNIMPLEMENTED_FUNC(sceNpTrophy);
+	return CELL_OK;
+}
+
+s32 sceNpTrophy_7FACB0D7()
+{
+	UNIMPLEMENTED_FUNC(sceNpTrophy);
+	return CELL_OK;
+}
+
+s32 sceNpTrophy_54D014EE()
+{
+	UNIMPLEMENTED_FUNC(sceNpTrophy);
+	return CELL_OK;
+}
+
+s32 sceNpTrophy_518CA6C0()
+{
+	UNIMPLEMENTED_FUNC(sceNpTrophy);
+	return CELL_OK;
+}
+
+s32 sceNpTrophy_0C941692()
+{
+	UNIMPLEMENTED_FUNC(sceNpTrophy);
+	return CELL_OK;
+}
+
+s32 sceNpTrophy_014786F2()
+{
+	UNIMPLEMENTED_FUNC(sceNpTrophy);
+	return CELL_OK;
+}
 
 DECLARE(ppu_module_manager::sceNpTrophy)("sceNpTrophy", []()
 {
@@ -921,4 +962,13 @@ DECLARE(ppu_module_manager::sceNpTrophy)("sceNpTrophy", []()
 	REG_FUNC(sceNpTrophy, sceNpTrophyGetTrophyDetails);
 	REG_FUNC(sceNpTrophy, sceNpTrophyGetTrophyInfo);
 	REG_FUNC(sceNpTrophy, sceNpTrophyGetGameIcon);
+
+	//Need find real name
+	REG_FNID(sceNpTrophy, 0x92E0410E, sceNpTrophy_92E0410E);
+	REG_FNID(sceNpTrophy, 0xB460AE5B, sceNpTrophy_B460AE5B);
+	REG_FNID(sceNpTrophy, 0x7FACB0D7, sceNpTrophy_7FACB0D7);
+	REG_FNID(sceNpTrophy, 0x54D014EE, sceNpTrophy_54D014EE);
+	REG_FNID(sceNpTrophy, 0x518CA6C0, sceNpTrophy_518CA6C0);
+	REG_FNID(sceNpTrophy, 0x0C941692, sceNpTrophy_0C941692);
+	REG_FNID(sceNpTrophy, 0x014786F2, sceNpTrophy_014786F2);
 });

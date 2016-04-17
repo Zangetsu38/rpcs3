@@ -48,14 +48,40 @@ namespace rsx
 			std::string trophy_message;
 			switch (trophy.trophyGrade)
 			{
-			case SCE_NP_TROPHY_GRADE_BRONZE: trophy_message = "bronze"; break;
-			case SCE_NP_TROPHY_GRADE_SILVER: trophy_message = "silver"; break;
-			case SCE_NP_TROPHY_GRADE_GOLD: trophy_message = "gold"; break;
-			case SCE_NP_TROPHY_GRADE_PLATINUM: trophy_message = "platinum"; break;
+			case SCE_NP_TROPHY_GRADE_BRONZE: trophy_message = "Bronze"; break;
+			case SCE_NP_TROPHY_GRADE_SILVER: trophy_message = "Silver"; break;
+			case SCE_NP_TROPHY_GRADE_GOLD: trophy_message = "Gold"; break;
+			case SCE_NP_TROPHY_GRADE_PLATINUM: trophy_message = "Platinum"; break;
 			default: break;
 			}
 
-			trophy_message = "You have earned the " + trophy_message + " trophy\n" + utf8_to_ascii8(trophy.name);
+			std::string TrophyMsg = "";
+			switch (g_cfg.sys.language)
+			{
+			case 0: TrophyMsg = "トロフィーを獲得しました。"; break;//Japanese
+			case 1: TrophyMsg = "You have earned a trophy."; break; //English(US)
+			case 2: TrophyMsg = "Vous avez obtenue un trophée."; break; //French
+			case 3: TrophyMsg = "Has ganado un trofeo."; break; //Spanish
+			case 4: TrophyMsg = "Sie haben eine Trophäe verdient."; break; //German
+			case 5: TrophyMsg = "Hai guadagnata un trofeo"; break; //Italian
+			//case 6: TrophyMsg = "Du hast eine Trophäe erhalten."; break; //Dutch
+			case 6: TrophyMsg = "U hebt een trofee gewonnen."; break; //Dutch	
+			case 7: TrophyMsg = "Ganhaste um troféu"; break; //Portuguese (PT)
+			case 8: TrophyMsg = "Приз получен."; break;//Russian
+			case 9: TrophyMsg = "트로피를 획득했습니다."; break; //Korean
+			case 10: TrophyMsg = "已獲得獎盃."; break; //Chinese (Trad.)
+			//case 11: trophy_message = ""; break; //Chinese (Simp.)
+			//case 12: trophy_message = ""; break; //Finnish
+			case 13: TrophyMsg = "Du har vunnit en trophy."; break; //Swedish
+			//case 14: trophy_message = ""; break; //Danish
+			case 15: TrophyMsg = "Udalo Ci sie zdobyc trofeum."; break; //Polish
+			case 16: TrophyMsg = "Trophy earned."; break; //English (UK)
+			case 17: TrophyMsg = "Você conquistou um troféu."; break; //Portuguese (BR)
+			case 18: TrophyMsg = "Kupa kazanildi."; break; //Turkish
+			}
+
+			trophy_message = trophy_message + ". " + TrophyMsg + "\n" + utf8_to_ascii8(trophy.name);
+			//trophy_message = "You have earned the " + trophy_message + " trophy\n" + utf8_to_ascii8(trophy.name);
 			text_view.set_text(trophy_message);
 			text_view.auto_resize();
 

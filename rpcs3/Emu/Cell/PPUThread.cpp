@@ -1422,6 +1422,18 @@ extern void ppu_initialize(const ppu_module& info)
 			cache_path += Emu.GetTitleID();
 			cache_path += '/';
 		}
+		else if (info.path.compare(0, dev_flash.size(), dev_flash) != 0 && !Emu.GetTitleID().empty() && Emu.GetCat() != "PP")
+		{
+			// Add prefix for anything except dev_flash files, standalone elfs or PSP classics
+			cache_path += Emu.GetTitleID();
+			cache_path += '/';
+		}
+		else if (info.path.compare(0, dev_flash.size(), dev_flash) != 0 && !Emu.GetTitleID().empty() && Emu.GetCat() != "PE")
+		{
+			// Add prefix for anything except dev_flash files, standalone elfs or PS2 classics
+			cache_path += Emu.GetTitleID();
+			cache_path += '/';
+		}
 
 		// Add PPU hash and filename
 		fmt::append(cache_path, "ppu-%s-%s/", fmt::base57(info.sha1), info.path.substr(info.path.find_last_of('/') + 1));

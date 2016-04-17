@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "Emu/Cell/PPUModule.h"
 
 LOG_CHANNEL(libad_core);
@@ -45,6 +45,12 @@ s32 sceAdConnectContext()
 	return CELL_OK;
 }
 
+s32 libad_core_260DB83D() //Pain
+{
+	UNIMPLEMENTED_FUNC(libad_core);
+	return CELL_OK;
+}
+
 DECLARE(ppu_module_manager::libad_core)("libad_core", []()
 {
 	REG_FUNC(libad_core, sceAdOpenContext);
@@ -54,4 +60,7 @@ DECLARE(ppu_module_manager::libad_core)("libad_core", []()
 	REG_FUNC(libad_core, sceAdGetSpaceInfo);
 	REG_FUNC(libad_core, sceAdGetConnectionInfo);
 	REG_FUNC(libad_core, sceAdConnectContext);
+
+	//Need found real name.
+	REG_FNID(libad_core, 0x260DB83D, libad_core_260DB83D);
 });

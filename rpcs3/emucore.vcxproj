@@ -233,6 +233,7 @@
     <ClCompile Include="Emu\Cell\Modules\cellSpurs.cpp" />
     <ClCompile Include="Emu\Cell\Modules\cellSpursJq.cpp" />
     <ClCompile Include="Emu\Cell\Modules\cellSpursSpu.cpp" />
+    <ClCompile Include="Emu\Cell\Modules\cellSsc.cpp" />
     <ClCompile Include="Emu\Cell\Modules\cellSsl.cpp" />
     <ClCompile Include="Emu\Cell\Modules\cellStorage.cpp" />
     <ClCompile Include="Emu\Cell\Modules\cellSubDisplay.cpp" />
@@ -259,6 +260,7 @@
     <ClCompile Include="Emu\Cell\Modules\cellVpost.cpp" />
     <ClCompile Include="Emu\Cell\Modules\cellWebBrowser.cpp" />
     <ClCompile Include="Emu\Cell\Modules\libad_async.cpp" />
+    <ClCompile Include="Emu\Cell\Modules\libad_billboard_util.cpp" />
     <ClCompile Include="Emu\Cell\Modules\libad_core.cpp" />
     <ClCompile Include="Emu\Cell\Modules\libmedi.cpp" />
     <ClCompile Include="Emu\Cell\Modules\libmixer.cpp" />
@@ -433,16 +435,7 @@
     <ClInclude Include="Emu\Cell\lv2\sys_config.h" />
     <ClInclude Include="Emu\Cell\lv2\sys_gpio.h" />
     <ClInclude Include="Emu\Cell\lv2\sys_net.h" />
-    <ClInclude Include="Emu\Cell\Modules\cellCelp8Enc.h" />
-    <ClInclude Include="Emu\Cell\Modules\cellCelpEnc.h" />
-    <ClInclude Include="Emu\Cell\Modules\cellDaisy.h" />
-    <ClInclude Include="Emu\Cell\Modules\cellHttp.h" />
-    <ClInclude Include="Emu\Cell\Modules\cellHttpUtil.h" />
-    <ClInclude Include="Emu\Cell\Modules\cellJpgEnc.h" />
     <ClInclude Include="Emu\Cell\lv2\sys_overlay.h" />
-    <ClInclude Include="Emu\Cell\Modules\cellOskDialog.h" />
-    <ClInclude Include="Emu\Cell\Modules\cellVoice.h" />
-    <ClInclude Include="Emu\Cell\Modules\StaticHLE.h" />
     <ClInclude Include="Emu\Cell\PPUAnalyser.h" />
     <ClInclude Include="Emu\Cell\PPUTranslator.h" />
     <ClInclude Include="Emu\CPU\CPUTranslator.h" />
@@ -491,6 +484,9 @@
     <ClInclude Include="Emu\Cell\Modules\cellAudioOut.h" />
     <ClInclude Include="Emu\Cell\Modules\cellBgdl.h" />
     <ClInclude Include="Emu\Cell\Modules\cellCamera.h" />
+    <ClInclude Include="Emu\Cell\Modules\cellCelp8Enc.h" />
+    <ClInclude Include="Emu\Cell\Modules\cellCelpEnc.h" />
+    <ClInclude Include="Emu\Cell\Modules\cellDaisy.h" />
     <ClInclude Include="Emu\Cell\Modules\cellDmux.h" />
     <ClInclude Include="Emu\Cell\Modules\cellFiber.h" />
     <ClInclude Include="Emu\Cell\Modules\cellFont.h" />
@@ -500,8 +496,11 @@
     <ClInclude Include="Emu\Cell\Modules\cellGcmSys.h" />
     <ClInclude Include="Emu\Cell\Modules\cellGem.h" />
     <ClInclude Include="Emu\Cell\Modules\cellGifDec.h" />
+    <ClInclude Include="Emu\Cell\Modules\cellHttp.h" />
+    <ClInclude Include="Emu\Cell\Modules\cellHttpUtil.h" />
     <ClInclude Include="Emu\Cell\Modules\cellImeJp.h" />
     <ClInclude Include="Emu\Cell\Modules\cellJpgDec.h" />
+    <ClInclude Include="Emu\Cell\Modules\cellJpgEnc.h" />
     <ClInclude Include="Emu\Cell\Modules\cellKb.h" />
     <ClInclude Include="Emu\Cell\Modules\cellL10n.h" />
     <ClInclude Include="Emu\Cell\Modules\cellMic.h" />
@@ -509,6 +508,7 @@
     <ClInclude Include="Emu\Cell\Modules\cellMsgDialog.h" />
     <ClInclude Include="Emu\Cell\Modules\cellMusic.h" />
     <ClInclude Include="Emu\Cell\Modules\cellNetCtl.h" />
+    <ClInclude Include="Emu\Cell\Modules\cellOskDialog.h" />
     <ClInclude Include="Emu\Cell\Modules\cellPad.h" />
     <ClInclude Include="Emu\Cell\Modules\cellPamf.h" />
     <ClInclude Include="Emu\Cell\Modules\cellPng.h" />
@@ -534,6 +534,7 @@
     <ClInclude Include="Emu\Cell\Modules\cellVdec.h" />
     <ClInclude Include="Emu\Cell\Modules\cellVideoOut.h" />
     <ClInclude Include="Emu\Cell\Modules\cellVideoUpload.h" />
+    <ClInclude Include="Emu\Cell\Modules\cellVoice.h" />
     <ClInclude Include="Emu\Cell\Modules\cellVpost.h" />
     <ClInclude Include="Emu\Cell\Modules\cellWebBrowser.h" />
     <ClInclude Include="Emu\Cell\Modules\libmixer.h" />
@@ -547,6 +548,7 @@
     <ClInclude Include="Emu\Cell\Modules\sceNpTrophy.h" />
     <ClInclude Include="Emu\Cell\Modules\sceNpTus.h" />
     <ClInclude Include="Emu\Cell\Modules\sceNpUtil.h" />
+    <ClInclude Include="Emu\Cell\Modules\StaticHLE.h"/>
     <ClInclude Include="Emu\Cell\Modules\sysPrxForUser.h" />
     <ClInclude Include="Emu\Cell\Modules\sys_lv2dbg.h" />
     <ClInclude Include="Emu\Cell\Modules\sys_net_.h" />

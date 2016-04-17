@@ -88,6 +88,16 @@ qrc_*.cpp
 rpcs3_automoc.cpp
 ui_*.h
 rpcs3/rpcs3_autogen/*
+rpcs3/Icons/trophy128_tex_grade_bronze.png
+rpcs3/Icons/trophy128_tex_grade_gold.png
+rpcs3/Icons/trophy128_tex_grade_lock.png
+rpcs3/Icons/trophy128_tex_grade_platinum.png
+rpcs3/Icons/trophy128_tex_grade_silver.png
+rpcs3/Icons/trophy_tex_grade_bronze.png
+rpcs3/Icons/trophy_tex_grade_gold.png
+rpcs3/Icons/trophy_tex_grade_platinum.png
+rpcs3/Icons/trophy_tex_grade_silver.png
+/bin/GuiConfigs
 
 # QtCreator
 CMakeLists.txt.user

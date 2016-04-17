@@ -62,6 +62,7 @@ public:
 		ReadColorBuffers,
 		ReadDepthBuffer,
 		VSync,
+		Monitor3D,
 		DebugOutput,
 		DebugOverlay,
 		LegacyBuffers,
@@ -122,6 +123,10 @@ public:
 		Camera,
 		CameraType,
 		Move,
+		MoveNumber,
+		MoveExt,
+		ForceIniTracker,
+		ForceResTracker,
 
 		// Misc
 		ExitRPCS3OnFinish,
@@ -293,6 +298,7 @@ private:
 		{ ReadColorBuffers,           { "Video", "Read Color Buffers"}},
 		{ ReadDepthBuffer,            { "Video", "Read Depth Buffer"}},
 		{ VSync,                      { "Video", "VSync"}},
+		{ Monitor3D,                  { "Video", "3D Monitor"}},
 		{ DebugOutput,                { "Video", "Debug output"}},
 		{ DebugOverlay,               { "Video", "Debug overlay"}},
 		{ LegacyBuffers,              { "Video", "Use Legacy OpenGL Buffers"}},
@@ -353,6 +359,10 @@ private:
 		{ Camera,          { "Input/Output", "Camera"}},
 		{ CameraType,      { "Input/Output", "Camera type"}},
 		{ Move,            { "Input/Output", "Move" }},
+		{ MoveNumber,      { "Input/Output", "PSMove number"}},
+		{ MoveExt,         { "Input/Output", "PSMove accessory"}},
+		{ ForceIniTracker, { "Input/Output", "Force init tracker"}},
+		{ ForceResTracker, { "Input/Output", "Force reset tracker"}},
 
 		// Misc
 		{ ExitRPCS3OnFinish,         { "Miscellaneous", "Exit RPCS3 when process finishes" }},

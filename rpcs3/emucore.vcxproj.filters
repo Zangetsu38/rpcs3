@@ -578,6 +578,9 @@
     <ClCompile Include="Emu\Cell\Modules\libad_async.cpp">
       <Filter>Emu\Cell\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Emu\Cell\Modules\libad_billboard_util.cpp">
+      <Filter>Emu\Cell\Modules</Filter>
+    </ClCompile>
     <ClCompile Include="Emu\Cell\Modules\libad_core.cpp">
       <Filter>Emu\Cell\Modules</Filter>
     </ClCompile>
@@ -823,6 +826,9 @@
     </ClCompile>
     <ClCompile Include="Emu\Io\usb_device.cpp">
       <Filter>Emu\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="Emu\Cell\Modules\cellSsc.cpp">
+      <Filter>Emu\Cell\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1213,6 +1219,9 @@
     <ClInclude Include="Emu\Cell\Modules\cellNetCtl.h">
       <Filter>Emu\Cell\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Emu\Cell\Modules\cellOskDialog.h">
+      <Filter>Emu\Cell\Modules</Filter>
+    </ClInclude>
     <ClInclude Include="Emu\Cell\Modules\cellPad.h">
       <Filter>Emu\Cell\Modules</Filter>
     </ClInclude>
@@ -1428,9 +1437,6 @@
     </ClInclude>
     <ClInclude Include="..\Utilities\sema.h">
       <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="Emu\Cell\Modules\cellOskDialog.h">
-      <Filter>Emu\Cell\Modules</Filter>
     </ClInclude>
     <ClInclude Include="Loader\PUP.h">
       <Filter>Loader</Filter>

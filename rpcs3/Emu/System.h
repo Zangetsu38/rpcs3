@@ -112,6 +112,7 @@ enum class camera_handler
 {
 	null,
 	fake,
+	pseye,
 };
 
 enum class fake_camera_type
@@ -138,6 +139,22 @@ enum class microphone_handler
 	rocksmith,
 };
 
+
+enum class psmove_number
+{
+	_7,
+	_6,
+	_5,
+	_4,
+};
+
+enum class psmove_ext
+{
+	shooter,
+	wheel,
+	null,
+};
+
 enum class video_resolution
 {
 	_1080,
@@ -148,6 +165,11 @@ enum class video_resolution
 	_1440x1080,
 	_1280x1080,
 	_960x1080,
+	_720_3d,
+	_1024_3d,
+	_960_3d,
+	_800_3d,
+	_640_3d,
 };
 
 enum class video_aspect
@@ -155,6 +177,15 @@ enum class video_aspect
 	_auto,
 	_4_3,
 	_16_9,
+};
+
+enum class video_refresh
+{
+	_auto,
+	_59_94,
+	_50,
+	_60,
+	_30,
 };
 
 enum class frame_limit_type
@@ -432,7 +463,7 @@ struct cfg_root : cfg::node
 		cfg::string emulator_dir{this, "$(EmulatorDir)"}; // Default (empty): taken from fs::get_config_dir()
 		cfg::string dev_hdd0{this, "/dev_hdd0/", "$(EmulatorDir)dev_hdd0/"};
 		cfg::string dev_hdd1{this, "/dev_hdd1/", "$(EmulatorDir)dev_hdd1/"};
-		cfg::string dev_flash{this, "/dev_flash/"};
+		cfg::string dev_flash{this, "/dev_flash/", "$(EmulatorDir)dev_flash/"};
 		cfg::string dev_usb000{this, "/dev_usb000/", "$(EmulatorDir)dev_usb000/"};
 		cfg::string dev_bdvd{this, "/dev_bdvd/"}; // Not mounted
 		cfg::string app_home{this, "/app_home/"}; // Not mounted
@@ -467,6 +498,7 @@ struct cfg_root : cfg::node
 		cfg::_bool read_depth_buffer{this, "Read Depth Buffer"};
 		cfg::_bool log_programs{this, "Log shader programs"};
 		cfg::_bool vsync{this, "VSync"};
+		cfg::_bool monitor_3d{this, "3D Monitor", false};
 		cfg::_bool debug_output{this, "Debug output"};
 		cfg::_bool overlay{this, "Debug overlay"};
 		cfg::_bool gl_legacy_buffers{this, "Use Legacy OpenGL Buffers"};
@@ -583,8 +615,13 @@ struct cfg_root : cfg::node
 		cfg::_enum<mouse_handler> mouse{this, "Mouse", mouse_handler::basic};
 		cfg::_enum<pad_handler> pad{this, "Pad", pad_handler::keyboard};
 		cfg::_enum<camera_handler> camera{this, "Camera", camera_handler::null};
+		cfg::_bool force_init_tracker{this, "Force init tracker", false };
+		cfg::_bool force_reset_tracker{this, "Force reset tracker", false };
 		cfg::_enum<fake_camera_type> camera_type{this, "Camera type", fake_camera_type::unknown};
 		cfg::_enum<move_handler> move{this, "Move", move_handler::null};
+		cfg::_enum<psmove_number> move_number{this, "PSMove number", psmove_number::_7};
+		cfg::_enum<psmove_ext> move_ext{this, "PSMove accessory", psmove_ext::null};
+
 	} io{this};
 
 	struct node_sys : cfg::node

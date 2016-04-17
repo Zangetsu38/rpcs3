@@ -377,6 +377,9 @@ void fmt_class_string<SceNpError>::format(std::string& out, u64 arg)
 
 s32 g_psn_connection_status = SCE_NP_MANAGER_STATUS_OFFLINE;
 
+vm::ptr<SceNpManagerCallback> managerCallback;
+vm::ptr<void> managerCallbackArg;
+
 error_code sceNpInit(u32 poolsize, vm::ptr<void> poolptr)
 {
 	sceNp.warning("sceNpInit(poolsize=0x%x, poolptr=*0x%x)", poolsize, poolptr);
@@ -562,7 +565,7 @@ error_code sceNpDrmExecuteGamePurchase()
 
 error_code sceNpDrmGetTimelimit(vm::cptr<char> path, vm::ptr<u64> time_remain)
 {
-	sceNp.todo("sceNpDrmGetTimelimit(path=%s, time_remain=*0x%x)", path, time_remain);
+	sceNp.warning("sceNpDrmGetTimelimit(path=%s, time_remain=*0x%x)", path, time_remain);
 
 	if (!path || !time_remain)
 	{
@@ -892,7 +895,7 @@ error_code sceNpBasicAddFriend(vm::cptr<SceNpId> contact, vm::cptr<char> body, s
 
 error_code sceNpBasicGetFriendListEntryCount(vm::ptr<u32> count)
 {
-	sceNp.todo("sceNpBasicGetFriendListEntryCount(count=*0x%x)", count);
+	sceNp.warning("sceNpBasicGetFriendListEntryCount(count=*0x%x)", count);
 
 	if (!g_fxo->get<sce_np_manager>()->is_initialized)
 	{
@@ -1365,7 +1368,7 @@ error_code sceNpBasicGetClanMessageEntry(u32 index, vm::ptr<SceNpUserInfo> from)
 
 error_code sceNpBasicGetMessageEntryCount(u32 type, vm::ptr<u32> count)
 {
-	sceNp.todo("sceNpBasicGetMessageEntryCount(type=%d, count=*0x%x)", type, count);
+	sceNp.warning("sceNpBasicGetMessageEntryCount(type=%d, count=*0x%x)", type, count);
 
 	if (!g_fxo->get<sce_np_manager>()->is_initialized)
 	{
@@ -1415,7 +1418,7 @@ error_code sceNpBasicGetMessageEntry(u32 type, u32 index, vm::ptr<SceNpUserInfo>
 
 error_code sceNpBasicGetEvent(vm::ptr<s32> event, vm::ptr<SceNpUserInfo> from, vm::ptr<s32> data, vm::ptr<u32> size)
 {
-	sceNp.todo("sceNpBasicGetEvent(event=*0x%x, from=*0x%x, data=*0x%x, size=*0x%x)", event, from, data, size);
+	sceNp.warning("sceNpBasicGetEvent(event=*0x%x, from=*0x%x, data=*0x%x, size=*0x%x)", event, from, data, size);
 
 	// TODO: Check for other error and pass other events
 	//*event = SCE_NP_BASIC_EVENT_OFFLINE; // This event only indicates a contact is offline, not the current status of the connection
@@ -2210,7 +2213,7 @@ error_code sceNpLookupTitleSmallStorageAsync(s32 transId, vm::ptr<void> data, u6
 
 error_code sceNpManagerRegisterCallback(vm::ptr<SceNpManagerCallback> callback, vm::ptr<void> arg)
 {
-	sceNp.todo("sceNpManagerRegisterCallback(callback=*0x%x, arg=*0x%x)", callback, arg);
+	sceNp.error("sceNpManagerRegisterCallback(callback=*0x%x, arg=*0x%x)", callback, arg);
 
 	if (!g_fxo->get<sce_np_manager>()->is_initialized)
 	{
@@ -2221,6 +2224,9 @@ error_code sceNpManagerRegisterCallback(vm::ptr<SceNpManagerCallback> callback, 
 	{
 		return SCE_NP_ERROR_INVALID_ARGUMENT;
 	}
+
+	managerCallback = callback;
+	managerCallbackArg = arg;
 
 	return CELL_OK;
 }
@@ -2239,7 +2245,7 @@ error_code sceNpManagerUnregisterCallback()
 
 error_code sceNpManagerGetStatus(vm::ptr<s32> status)
 {
-	sceNp.todo("sceNpManagerGetStatus(status=*0x%x)", status);
+	sceNp.warning("sceNpManagerGetStatus(status=*0x%x)", status);
 
 	if (!g_fxo->get<sce_np_manager>()->is_initialized)
 	{
@@ -2316,7 +2322,7 @@ error_code sceNpManagerGetOnlineId(vm::ptr<SceNpOnlineId> onlineId)
 
 error_code sceNpManagerGetNpId(ppu_thread& ppu, vm::ptr<SceNpId> npId)
 {
-	sceNp.todo("sceNpManagerGetNpId(npId=*0x%x)", npId);
+	sceNp.warning("sceNpManagerGetNpId(npId=*0x%x)", npId);
 
 	if (!g_fxo->get<sce_np_manager>()->is_initialized)
 	{
@@ -2337,6 +2343,8 @@ error_code sceNpManagerGetNpId(ppu_thread& ppu, vm::ptr<SceNpId> npId)
 	{
 		return SCE_NP_ERROR_INVALID_STATE;
 	}
+	
+	strcpy(npId->handle.data, "Zangetsu");
 
 	return CELL_OK;
 }
@@ -2478,7 +2486,7 @@ error_code sceNpManagerGetAccountAge(vm::ptr<s32> age)
 
 error_code sceNpManagerGetContentRatingFlag(vm::ptr<s32> isRestricted, vm::ptr<s32> age)
 {
-	sceNp.todo("sceNpManagerGetContentRatingFlag(isRestricted=*0x%x, age=*0x%x)", isRestricted, age);
+	sceNp.warning("sceNpManagerGetContentRatingFlag(isRestricted=*0x%x, age=*0x%x)", isRestricted, age);
 
 	if (!g_fxo->get<sce_np_manager>()->is_initialized)
 	{
@@ -2539,7 +2547,14 @@ error_code sceNpManagerGetChatRestrictionFlag(vm::ptr<s32> isRestricted)
 
 error_code sceNpManagerGetCachedInfo(CellSysutilUserId userId, vm::ptr<SceNpManagerCacheParam> param)
 {
-	sceNp.todo("sceNpManagerGetChatRestrictionFlag(userId=%d, param=*0x%x)", userId, param);
+	sceNp.todo("sceNpManagerGetCachedInfo(userId=%d, param=*0x%x)", userId, param);
+
+	u32 zeoo = 0;
+	if (userId)
+	{//dodgy hack
+		sceNp.todo("meh, not 0");
+		return CELL_ENOENT;
+	}
 
 	if (!g_fxo->get<sce_np_manager>()->is_initialized)
 	{
@@ -2550,6 +2565,11 @@ error_code sceNpManagerGetCachedInfo(CellSysutilUserId userId, vm::ptr<SceNpMana
 	{
 		return SCE_NP_ERROR_INVALID_ARGUMENT;
 	}
+
+	strcpy(param->avatarUrl.data, "http://psn-rsc.prod.dl.playstation.net/psn-rsc/avatar/UP9000/CUSA00341_00-AV00000000000001_1E3C27E7C07A69A2040F_l.png");
+	strcpy(param->npId.handle.data, "Zangetsu");
+	strcpy(param->onlineId.data, "Zangetsu");
+	strcpy(param->onlineName.data, "Zangetsu");
 
 	return CELL_OK;
 }
@@ -2593,6 +2613,8 @@ error_code sceNpManagerRequestTicket2(vm::cptr<SceNpId> npId, vm::cptr<SceNpTick
 {
 	sceNp.todo("sceNpManagerRequestTicket2(npId=*0x%x, version=*0x%x, serviceId=%s, cookie=*0x%x, cookieSize=%d, entitlementId=%s, consumedCount=%d)",
 		npId, version, serviceId, cookie, cookieSize, entitlementId, consumedCount);
+
+	//managerCallback(ppu, 255, 0, managerCallbackArg);//GodTicket callback event == 255
 
 	if (!g_fxo->get<sce_np_manager>()->is_initialized)
 	{
@@ -4370,6 +4392,41 @@ s32 _Z32_sce_np_sysutil_cxml_prepare_docPN16sysutil_cxmlutil11FixedMemoryERN4cxm
 	return CELL_OK;
 }
 
+error_code sceNp_A41DDED6()
+{
+	UNIMPLEMENTED_FUNC(sceNp);
+	return CELL_OK;
+}
+
+error_code sceNp_417A40E5()
+{
+	UNIMPLEMENTED_FUNC(sceNp);
+	return CELL_OK;
+}
+
+error_code sceNpManagerInt_3436C901()
+{
+	UNIMPLEMENTED_FUNC(sceNp);
+	return CELL_OK;
+}
+
+error_code sceNpManagerInt_6ACAC985()
+{
+	UNIMPLEMENTED_FUNC(sceNp);
+	return CELL_OK;
+}
+
+error_code sceNpPlus_6ACAC985()
+{
+	UNIMPLEMENTED_FUNC(sceNp);
+	return CELL_OK;
+}
+
+error_code sceNpBasicLimited_EB42E2E6()
+{
+	UNIMPLEMENTED_FUNC(sceNp);
+	return CELL_OK;
+}
 
 DECLARE(ppu_module_manager::sceNp)("sceNp", []()
 {
@@ -4490,16 +4547,16 @@ DECLARE(ppu_module_manager::sceNp)("sceNp", []()
 	REG_FUNC(sceNp, sceNpManagerUnregisterCallback);
 	REG_FUNC(sceNp, sceNpManagerGetStatus);
 	REG_FUNC(sceNp, sceNpManagerGetNetworkTime);
-	REG_FUNC(sceNp, sceNpManagerGetOnlineId);
-	REG_FUNC(sceNp, sceNpManagerGetNpId);
-	REG_FUNC(sceNp, sceNpManagerGetOnlineName);
-	REG_FUNC(sceNp, sceNpManagerGetAvatarUrl);
-	REG_FUNC(sceNp, sceNpManagerGetMyLanguages);
-	REG_FUNC(sceNp, sceNpManagerGetAccountRegion);
-	REG_FUNC(sceNp, sceNpManagerGetAccountAge);
-	REG_FUNC(sceNp, sceNpManagerGetContentRatingFlag);
-	REG_FUNC(sceNp, sceNpManagerGetChatRestrictionFlag);
-	REG_FUNC(sceNp, sceNpManagerGetCachedInfo);
+	REG_FUNC(sceNp, sceNpManagerGetOnlineId).flag(MFF_FORCED_HLE);
+	REG_FUNC(sceNp, sceNpManagerGetNpId).flag(MFF_FORCED_HLE);
+	REG_FUNC(sceNp, sceNpManagerGetOnlineName).flag(MFF_FORCED_HLE);
+	REG_FUNC(sceNp, sceNpManagerGetAvatarUrl).flag(MFF_FORCED_HLE);
+	REG_FUNC(sceNp, sceNpManagerGetMyLanguages).flag(MFF_FORCED_HLE);
+	REG_FUNC(sceNp, sceNpManagerGetAccountRegion).flag(MFF_FORCED_HLE);
+	REG_FUNC(sceNp, sceNpManagerGetAccountAge).flag(MFF_FORCED_HLE);
+	REG_FUNC(sceNp, sceNpManagerGetContentRatingFlag).flag(MFF_FORCED_HLE);
+	REG_FUNC(sceNp, sceNpManagerGetChatRestrictionFlag).flag(MFF_FORCED_HLE);
+	REG_FUNC(sceNp, sceNpManagerGetCachedInfo).flag(MFF_FORCED_HLE);
 	REG_FUNC(sceNp, sceNpManagerGetPsHandle);
 	REG_FUNC(sceNp, sceNpManagerRequestTicket);
 	REG_FUNC(sceNp, sceNpManagerRequestTicket2);
@@ -4612,4 +4669,21 @@ DECLARE(ppu_module_manager::sceNp)("sceNp", []()
 	REG_FUNC(sceNp, _Z31_sce_np_sysutil_send_packet_subiRN4cxml8DocumentE);
 	REG_FUNC(sceNp, _Z37sce_np_matching_set_matching2_runningb);
 	REG_FUNC(sceNp, _Z32_sce_np_sysutil_cxml_prepare_docPN16sysutil_cxmlutil11FixedMemoryERN4cxml8DocumentEPKcRNS2_7ElementES6_i);
+
+	//Need find real name
+	REG_FNID(sceNp, 0xA41DDED6, sceNp_A41DDED6); //NpCommerce2 Splatherhouse
+	REG_FNID(sceNp, 0x417A40E5, sceNp_417A40E5);;
+
+	static ppu_static_module sceNpManagerInt("sceNpManagerInt");
+	static ppu_static_module sceNpPlus("sceNpPlus");
+	static ppu_static_module sceNpBasicLimited("sceNpBasicLimited");
+	static ppu_static_module sceNpMatchingInt("sceNpMatchingInt");
+
+	//Need find real name
+	REG_FNID(sceNpManagerInt, 0x3436C901, sceNpManagerInt_3436C901);
+	REG_FNID(sceNpManagerInt, 0x6ACAC985, sceNpManagerInt_6ACAC985);
+
+	REG_FNID(sceNpPlus, 0x9CE5AC0B, sceNpPlus_6ACAC985);
+
+	REG_FNID(sceNpBasicLimited, 0xEB42E2E6, sceNpBasicLimited_EB42E2E6);
 });

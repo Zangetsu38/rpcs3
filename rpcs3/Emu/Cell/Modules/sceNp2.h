@@ -875,7 +875,7 @@ struct SceNpMatching2SignalingOptParam
 // Option parameters for requests
 struct SceNpMatching2RequestOptParam
 {
-	SceNpMatching2RequestCallback cbFunc;
+	vm::bptr<SceNpMatching2RequestCallback> cbFunc;
 	vm::ptr<void> cbFuncArg;
 	be_t<u32> timeout;
 	be_t<u16> appReqId;

@@ -563,6 +563,9 @@ settings_dialog::settings_dialog(std::shared_ptr<gui_settings> guiSettings, std:
 	xemu_settings->EnhanceCheckBox(ui->vsync, emu_settings::VSync);
 	SubscribeTooltip(ui->vsync, json_gpu_main["vsync"].toString());
 
+	xemu_settings->EnhanceCheckBox(ui->monitor_3d, emu_settings::Monitor3D);
+	SubscribeTooltip(ui->monitor_3d, json_gpu_main["monitor_3d"].toString());
+
 	xemu_settings->EnhanceCheckBox(ui->stretchToDisplayArea, emu_settings::StretchToDisplayArea);
 	SubscribeTooltip(ui->stretchToDisplayArea, json_gpu_main["stretchToDisplayArea"].toString());
 
@@ -971,6 +974,20 @@ settings_dialog::settings_dialog(std::shared_ptr<gui_settings> guiSettings, std:
 
 	xemu_settings->EnhanceComboBox(ui->moveBox, emu_settings::Move);
 	SubscribeTooltip(ui->moveBox, json_input["moveBox"].toString());
+
+	xemu_settings->EnhanceComboBox(ui->moveNumberBox, emu_settings::MoveNumber);
+	SubscribeTooltip(ui->moveNumberBox, json_input["moveNumerBox"].toString());
+
+	//xemu_settings->EnhanceComboBox(ui->moveExtBox, emu_settings::MoveExt);
+	//SubscribeTooltip(ui->moveExtBox, json_input["moveExtBox"].toString());
+
+	// Checkboxes
+
+	xemu_settings->EnhanceCheckBox(ui->forceInitTracker, emu_settings::ForceIniTracker);
+	SubscribeTooltip(ui->forceInitTracker, json_input["forceInitTracker"].toString());
+
+	xemu_settings->EnhanceCheckBox(ui->forceResetTracker, emu_settings::ForceResTracker);
+	SubscribeTooltip(ui->forceResetTracker, json_input["forceResetTracker"].toString());
 
 	//     _____           _                   _______    _
 	//    / ____|         | |                 |__   __|  | |

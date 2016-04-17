@@ -34,7 +34,7 @@ s32 sceNpCommerce2Term()
 s32 sceNpCommerce2CreateCtx()
 {
 	UNIMPLEMENTED_FUNC(sceNpCommerce2);
-	return CELL_OK;
+	return -1;
 }
 
 s32 sceNpCommerce2DestroyCtx()
@@ -319,6 +319,84 @@ s32 sceNpCommerce2DoServiceListFinishAsync()
 	return CELL_OK;
 }
 
+s32 sceNpCommerce2_D8871AA8()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_D46C9283()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_D4671D30()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_9684D405()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_816974F2()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_7A848DA8()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_6A53FDF9()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_5F1351C8()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_4B321A46()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_3A42BC5D()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_330D9C3D()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_18CE3DE0()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
+s32 sceNpCommerce2_0300B928()
+{
+	UNIMPLEMENTED_FUNC(sceNpCommerce2);
+	return CELL_OK;
+}
+
 DECLARE(ppu_module_manager::sceNpCommerce2)("sceNpCommerce2", []()
 {
 	REG_FUNC(sceNpCommerce2, sceNpCommerce2ExecuteStoreBrowse);
@@ -374,4 +452,19 @@ DECLARE(ppu_module_manager::sceNpCommerce2)("sceNpCommerce2", []()
 
 	REG_FUNC(sceNpCommerce2, sceNpCommerce2DoServiceListStartAsync);
 	REG_FUNC(sceNpCommerce2, sceNpCommerce2DoServiceListFinishAsync);
+
+	//Need find real name
+	REG_FNID(sceNpCommerce2, 0xD8871AA8, sceNpCommerce2_D8871AA8);
+	REG_FNID(sceNpCommerce2, 0xD46C9283, sceNpCommerce2_D46C9283);
+	REG_FNID(sceNpCommerce2, 0xD4671D30, sceNpCommerce2_D4671D30);
+	REG_FNID(sceNpCommerce2, 0x9684D405, sceNpCommerce2_9684D405);
+	REG_FNID(sceNpCommerce2, 0x816974F2, sceNpCommerce2_816974F2);
+	REG_FNID(sceNpCommerce2, 0x7A848DA8, sceNpCommerce2_7A848DA8);
+	REG_FNID(sceNpCommerce2, 0x6A53FDF9, sceNpCommerce2_6A53FDF9);
+	REG_FNID(sceNpCommerce2, 0x5F1351C8, sceNpCommerce2_5F1351C8);
+	REG_FNID(sceNpCommerce2, 0x4B321A46, sceNpCommerce2_4B321A46);
+	REG_FNID(sceNpCommerce2, 0x3A42BC5D, sceNpCommerce2_3A42BC5D);
+	REG_FNID(sceNpCommerce2, 0x330D9C3D, sceNpCommerce2_330D9C3D);
+	REG_FNID(sceNpCommerce2, 0x18CE3DE0, sceNpCommerce2_18CE3DE0);
+	REG_FNID(sceNpCommerce2, 0x0300B928, sceNpCommerce2_0300B928);
 });

@@ -708,6 +708,7 @@ rsx::stencil_op rsx::to_stencil_op(u16 in)
 
 enum
 {
+	CELL_GCM_0 = 0x0,
 	CELL_GCM_FUNC_ADD = 0x8006,
 	CELL_GCM_MIN = 0x8007,
 	CELL_GCM_MAX = 0x8008,
@@ -722,6 +723,7 @@ rsx::blend_equation rsx::to_blend_equation(u16 in)
 {
 	switch (in)
 	{
+	case CELL_GCM_0: //GT5 Prologue race ingame
 	case CELL_GCM_FUNC_ADD: return rsx::blend_equation::add;
 	case CELL_GCM_MIN: return rsx::blend_equation::min;
 	case CELL_GCM_MAX: return rsx::blend_equation::max;
@@ -755,6 +757,7 @@ rsx::blend_factor rsx::to_blend_factor(u16 in)
 {
 	switch (in)
 	{
+	case 0x7:
 	case CELL_GCM_ZERO: return rsx::blend_factor::zero;
 	case CELL_GCM_ONE: return rsx::blend_factor::one;
 	case CELL_GCM_SRC_COLOR: return rsx::blend_factor::src_color;

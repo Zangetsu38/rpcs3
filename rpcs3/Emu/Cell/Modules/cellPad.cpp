@@ -191,6 +191,7 @@ error_code cellPadGetData(u32 port_no, vm::ptr<CellPadData> data)
 			case CELL_PAD_CTRL_L3:
 			case CELL_PAD_CTRL_START:
 			case CELL_PAD_CTRL_SELECT:
+			//case CELL_PAD_CTRL_PS:
 			default: break;
 			}
 		}

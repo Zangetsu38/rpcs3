@@ -1213,10 +1213,12 @@ namespace vk
 			auto vk_format = tex->info.format;
 			switch (gcm_format)
 			{
-			default:
-				//TODO
-				warn_once("Format incompatibility detected, reporting failure to force data copy (VK_FORMAT=0x%X, GCM_FORMAT=0x%X)", (u32)vk_format, gcm_format);
-				return false;
+			case CELL_GCM_TEXTURE_X16:
+				return (vk_format == VK_FORMAT_R16_UNORM);
+			case CELL_GCM_TEXTURE_Y16_X16:
+				return (vk_format == VK_FORMAT_R16G16_UNORM);
+			case CELL_GCM_TEXTURE_Y16_X16_FLOAT:
+				return (vk_format == VK_FORMAT_R16G16_SFLOAT);
 			case CELL_GCM_TEXTURE_W16_Z16_Y16_X16_FLOAT:
 				return (vk_format == VK_FORMAT_R16G16B16A16_SFLOAT);
 			case CELL_GCM_TEXTURE_W32_Z32_Y32_X32_FLOAT:
@@ -1234,10 +1236,21 @@ namespace vk
 			case CELL_GCM_TEXTURE_DEPTH24_D8:
 			case CELL_GCM_TEXTURE_DEPTH24_D8_FLOAT:
 				return (vk_format == VK_FORMAT_D24_UNORM_S8_UINT || vk_format == VK_FORMAT_D32_SFLOAT_S8_UINT);
-			case CELL_GCM_TEXTURE_X16:
 			case CELL_GCM_TEXTURE_DEPTH16:
 			case CELL_GCM_TEXTURE_DEPTH16_FLOAT:
 				return (vk_format == VK_FORMAT_D16_UNORM);
+			case CELL_GCM_TEXTURE_A1R5G5B5:
+				return (vk_format == VK_FORMAT_A1R5G5B5_UNORM_PACK16);
+			case CELL_GCM_TEXTURE_A4R4G4B4:
+				return (vk_format == VK_FORMAT_B4G4R4A4_UNORM_PACK16);
+			case CELL_GCM_TEXTURE_D8R8G8B8:
+				return (vk_format == VK_FORMAT_B8G8R8A8_UNORM);
+
+			default:
+				//TODO
+				//LOG_FATAL(RSX, "Format incompatibility detected, reporting failure to force data copy (VK_FORMAT=0x%X,GCM_FORMAT=0x%X)", HERE, (u32)vk_format, gcm_format);
+				err_once("Format incompatibility detected, reporting failure to force data copy (VK_FORMAT=0x%X, GCM_FORMAT=0x%X)", (u32)vk_format, gcm_format);
+				return false;
 			}
 		}
 

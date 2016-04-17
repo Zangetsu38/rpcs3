@@ -91,7 +91,7 @@ struct push_buffer_vertex_info
 		case vertex_base_type::s32k:
 			return size / 2;
 		default:
-			fmt::throw_exception("Unsupported vertex base type %d", (u8)type);
+			fmt::throw_exception("Unsupported vertex base type %d" HERE, (u8)type);
 		}
 	}
 

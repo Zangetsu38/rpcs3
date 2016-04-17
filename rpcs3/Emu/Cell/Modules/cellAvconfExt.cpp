@@ -277,7 +277,21 @@ s32 cellVideoOutGetScreenSize(u32 videoOut, vm::ptr<f32> screenSize)
 	// float diagonal = roundf(sqrtf((powf(wxGetDisplaySizeMM().GetWidth(), 2) + powf(wxGetDisplaySizeMM().GetHeight(), 2))) * 0.0393f);
 #endif
 
-	return CELL_VIDEO_OUT_ERROR_VALUE_IS_NOT_SET;
+	switch (videoOut)
+	{
+	case CELL_VIDEO_OUT_PRIMARY:
+		if (g_cfg.video.monitor_3d)
+		{
+			*screenSize = 28.0;
+			return CELL_OK;
+		}
+		else
+		{
+			return CELL_VIDEO_OUT_ERROR_VALUE_IS_NOT_SET;
+		}
+	case CELL_VIDEO_OUT_SECONDARY:
+		return CELL_VIDEO_OUT_ERROR_UNSUPPORTED_VIDEO_OUT;
+	}
 }
 
 s32 cellVideoOutSetCopyControl(u32 videoOut, u32 control)

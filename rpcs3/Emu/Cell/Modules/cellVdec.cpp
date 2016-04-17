@@ -651,10 +651,12 @@ error_code cellVdecGetPicture(u32 handle, vm::cptr<CellVdecPicFormat> format, vm
 		}
 
 		AVPixelFormat in_f = AV_PIX_FMT_YUV420P;
+		AVPixelFormat in_j = AV_PIX_FMT_YUVJ420P;
 
 		switch (frame->format)
 		{
 		case AV_PIX_FMT_YUV420P: in_f = alpha_plane ? AV_PIX_FMT_YUVA420P : AV_PIX_FMT_YUV420P; break;
+		case AV_PIX_FMT_YUVJ420P: in_j = alpha_plane ? AV_PIX_FMT_YUVJ420P : AV_PIX_FMT_YUVJ420P; break;
 
 		default:
 		{

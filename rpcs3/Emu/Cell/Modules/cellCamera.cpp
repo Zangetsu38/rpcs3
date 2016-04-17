@@ -7,6 +7,8 @@
 #include "Emu/Io/PadHandler.h"
 #include "Emu/System.h"
 
+#include "psmove_tracker.h"
+
 LOG_CHANNEL(cellCamera);
 
 // **************
@@ -29,6 +31,7 @@ void fmt_class_string<camera_handler>::format(std::string& out, u64 arg)
 		{
 		case camera_handler::null: return "Null";
 		case camera_handler::fake: return "Fake";
+		case camera_handler::pseye: return "PS Eye";
 		}
 
 		return unknown;
@@ -268,20 +271,85 @@ u32 get_video_buffer_size(const CellCameraInfoEx& info)
 	return width * height * bpp;
 }
 
+namespace camera
+{
+	struct camera_config
+	{
+		struct PSMoveTrackerDeleter
+		{
+			void operator()(PSMoveTracker* p)
+			{
+				psmove_tracker_free(p);
+			}
+		};
+
+		// PSMoveAPI data
+		struct
+		{
+			std::unique_ptr<PSMoveTracker, PSMoveTrackerDeleter> tracker;
+			s32 connected_tracker;
+		} pseye;
+
+	};
+
+		namespace psmoveapi
+		{
+			static void init(camera_config* camera)
+			{
+				auto shared_data = g_fxo->get<gem_camera_shared>();
+
+				PSMoveTracker* tracker = psmove_tracker_new();
+				if (!tracker)
+				{
+					fmt::throw_exception("Camera: Couldn't initialize PSMoveAPI Tracker", HERE);
+					// TODO: Don't die
+				}
+				const auto connected = psmove_tracker_count_connected();
+				camera->pseye.connected_tracker = connected;
+
+				for (auto id = 0; id < connected; ++id)
+				{
+					psmove_tracker_set_exposure(tracker, PSMoveTracker_Exposure::Exposure_HIGH);
+				}
+				camera->pseye.tracker.reset(tracker);
+			}
+
+			static void end(camera_config* camera)
+			{
+				const auto tracker = camera->pseye.tracker.get();
+				psmove_tracker_free(tracker);
+			}
+
+			static void read(camera_config* camera, vm::ptr<u32>& frame_num, vm::ptr<u32>& bytes_read)
+			{
+				const auto tracker = camera->pseye.tracker.get();
+				psmove_tracker_update_image(tracker);
+				psmove_tracker_get_frame(tracker);
+			}
+
+			static void read_ex(camera_config* camera, vm::ptr<CellCameraReadEx>& read)
+			{
+				const auto tracker = camera->pseye.tracker.get();
+				psmove_tracker_update_image(tracker);
+				psmove_tracker_get_frame(tracker);
+			}
+		}
+}
+
 // ************************
 // * cellCamera functions *
 // ************************
 
+using namespace camera;
+
 s32 cellCameraInit()
 {
-	cellCamera.todo("cellCameraInit()");
+	cellCamera.warning("cellCameraInit()");
 
 	// Start camera thread
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::make<camera_thread>("Camera Thread");
 
-	std::lock_guard lock(g_camera->mutex);
-
-	if (g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_ALREADY_INIT;
 	}
@@ -290,6 +358,8 @@ s32 cellCameraInit()
 	{
 		return CELL_OK;
 	}
+
+	std::lock_guard lock(g_camera->mutex);
 
 	switch (g_cfg.io.camera_type)
 	{
@@ -336,31 +406,38 @@ s32 cellCameraInit()
 	}
 
 	// TODO: Some other default attributes? Need to check the actual behaviour on a real PS3.
-
+	auto camera = g_fxo->get<camera_config>();
 	auto shared_data = g_fxo->get<gem_camera_shared>();
 	shared_data->attr.exchange(g_camera->attr);
 
-	if (g_cfg.io.camera == camera_handler::fake)
+	if (!(g_cfg.io.camera == camera_handler::null))
 	{
 		g_camera->is_attached = true;
 	}
 
-	g_camera->init = 1;
+	if (g_cfg.io.camera == camera_handler::pseye)
+	{
+		camera::psmoveapi::init(camera);
+	}
 
 	return CELL_OK;
 }
 
 s32 cellCameraEnd()
 {
-	cellCamera.todo("cellCameraEnd()");
+	cellCamera.fatal("cellCameraEnd()");
+	auto shared_data = g_fxo->get<gem_camera_shared>();
+	auto camera = g_fxo->get<camera_config>();
+	const auto g_camera = fxm::withdraw<camera_thread>();
 
-	const auto g_camera = g_fxo->get<camera_thread>();
-
-	std::lock_guard lock(g_camera->mutex);
-
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
+	}
+
+	if (g_cfg.io.camera == camera_handler::pseye)
+	{
+		camera::psmoveapi::end(camera);
 	}
 
 	// TODO: My tests hinted to this behavior, but I'm not sure, so I'll leave this commented
@@ -370,8 +447,8 @@ s32 cellCameraEnd()
 	//	return res;
 	//}
 
-	// TODO
-	g_camera->init = 0;
+	// Join thread
+	g_camera->operator()();
 	return CELL_OK;
 }
 
@@ -421,7 +498,7 @@ s32 cellCameraOpenEx(s32 dev_num, vm::ptr<CellCameraInfoEx> info)
 		return CELL_CAMERA_ERROR_PARAM;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 	// we know g_camera is valid here (cellCameraSetAttribute above checks for it)
 
 	if (g_camera->is_open)
@@ -466,16 +543,16 @@ s32 cellCameraOpenPost()
 
 s32 cellCameraClose(s32 dev_num)
 {
-	cellCamera.todo("cellCameraClose(dev_num=%d)", dev_num);
+	cellCamera.fatal("cellCameraClose(dev_num=%d)", dev_num);
 
 	if (!check_dev_num(dev_num))
 	{
 		return CELL_CAMERA_ERROR_PARAM;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -514,9 +591,9 @@ s32 cellCameraGetDeviceGUID(s32 dev_num, vm::ptr<u32> guid)
 {
 	cellCamera.todo("cellCameraGetDeviceGUID(dev_num=%d, guid=*0x%x)", dev_num, guid);
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -532,9 +609,9 @@ s32 cellCameraGetType(s32 dev_num, vm::ptr<s32> type)
 {
 	cellCamera.todo("cellCameraGetType(dev_num=%d, type=*0x%x)", dev_num, type);
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -574,14 +651,9 @@ s32 cellCameraIsAvailable(s32 dev_num)
 		return false;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
-	{
-		return false;
-	}
-
-	if (!check_dev_num(dev_num))
+	if (!g_camera || !check_dev_num(dev_num))
 	{
 		return false;
 	}
@@ -598,14 +670,9 @@ s32 cellCameraIsAttached(s32 dev_num)
 		return false;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
-	{
-		return false;
-	}
-
-	if (!check_dev_num(dev_num))
+	if (!g_camera || !check_dev_num(dev_num))
 	{
 		return false;
 	}
@@ -614,7 +681,7 @@ s32 cellCameraIsAttached(s32 dev_num)
 
 	bool is_attached = g_camera->is_attached;
 
-	if (g_cfg.io.camera == camera_handler::fake)
+	if (g_cfg.io.camera == camera_handler::fake || g_cfg.io.camera == camera_handler::pseye)
 	{
 		// "attach" camera here
 		// normally should be attached immediately after event queue is registered, but just to be sure
@@ -637,14 +704,9 @@ s32 cellCameraIsOpen(s32 dev_num)
 		return false;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
-	{
-		return false;
-	}
-
-	if (!check_dev_num(dev_num))
+	if (!g_camera || !check_dev_num(dev_num))
 	{
 		return false;
 	}
@@ -663,14 +725,9 @@ s32 cellCameraIsStarted(s32 dev_num)
 		return false;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
-	{
-		return false;
-	}
-
-	if (!check_dev_num(dev_num))
+	if (!g_camera || !check_dev_num(dev_num))
 	{
 		return false;
 	}
@@ -685,9 +742,9 @@ s32 cellCameraGetAttribute(s32 dev_num, s32 attrib, vm::ptr<u32> arg1, vm::ptr<u
 	const auto attr_name = get_camera_attr_name(attrib);
 	cellCamera.todo("cellCameraGetAttribute(dev_num=%d, attrib=%d=%s, arg1=*0x%x, arg2=*0x%x)", dev_num, attrib, attr_name, arg1, arg2);
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -732,9 +789,9 @@ s32 cellCameraSetAttribute(s32 dev_num, s32 attrib, u32 arg1, u32 arg2)
 	const auto attr_name = get_camera_attr_name(attrib);
 	cellCamera.todo("cellCameraSetAttribute(dev_num=%d, attrib=%d=%s, arg1=%d, arg2=%d)", dev_num, attrib, attr_name, arg1, arg2);
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -770,9 +827,9 @@ s32 cellCameraGetBufferSize(s32 dev_num, vm::ptr<CellCameraInfoEx> info)
 {
 	cellCamera.todo("cellCameraGetBufferSize(dev_num=%d, info=*0x%x)", dev_num, info);
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -839,9 +896,9 @@ s32 cellCameraGetBufferInfoEx(s32 dev_num, vm::ptr<CellCameraInfoEx> info)
 
 	// the following should be moved to cellCameraGetBufferInfo
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -913,9 +970,9 @@ s32 cellCameraReset(s32 dev_num)
 		return CELL_CAMERA_ERROR_PARAM;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -961,9 +1018,9 @@ s32 cellCameraStart(s32 dev_num)
 		return CELL_CAMERA_ERROR_PARAM;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -1007,6 +1064,7 @@ s32 cellCameraRead(s32 dev_num, vm::ptr<u32> frame_num, vm::ptr<u32> bytes_read)
 {
 	cellCamera.todo("cellCameraRead(dev_num=%d, frame_num=*0x%x, bytes_read=*0x%x)", dev_num, frame_num, bytes_read);
 
+	auto camera = g_fxo->get<camera_config>();
 	vm::ptr<CellCameraReadEx> read_ex = vm::make_var<CellCameraReadEx>({});
 
 	s32 res = cellCameraReadEx(dev_num, read_ex);
@@ -1026,6 +1084,11 @@ s32 cellCameraRead(s32 dev_num, vm::ptr<u32> frame_num, vm::ptr<u32> bytes_read)
 		*bytes_read = read_ex->bytesread;
 	}
 
+	if (g_cfg.io.camera == camera_handler::pseye)
+	{
+		camera::psmoveapi::read(camera, frame_num, bytes_read);
+	}
+
 	return CELL_OK;
 }
 
@@ -1038,10 +1101,11 @@ s32 cellCameraRead2()
 s32 cellCameraReadEx(s32 dev_num, vm::ptr<CellCameraReadEx> read)
 {
 	cellCamera.todo("cellCameraReadEx(dev_num=%d, read=0x%x)", dev_num, read);
+	auto camera = g_fxo->get<camera_config>();
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -1071,6 +1135,11 @@ s32 cellCameraReadEx(s32 dev_num, vm::ptr<CellCameraReadEx> read)
 	if (!g_camera->is_streaming)
 	{
 		return CELL_CAMERA_ERROR_NOT_STARTED;
+	}
+
+	if (g_cfg.io.camera == camera_handler::pseye)
+	{
+		camera::psmoveapi::read_ex(camera, read);
 	}
 
 	// can call cellCameraReset() and cellCameraStop() in some cases
@@ -1105,9 +1174,9 @@ s32 cellCameraStop(s32 dev_num)
 		return CELL_CAMERA_ERROR_PARAM;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
+	const auto g_camera = fxm::get<camera_thread>();
 
-	if (!g_camera->init)
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -1156,9 +1225,8 @@ s32 cellCameraSetNotifyEventQueue(u64 key)
 {
 	cellCamera.todo("cellCameraSetNotifyEventQueue(key=0x%x)", key);
 
-	const auto g_camera = g_fxo->get<camera_thread>();
-
-	if (!g_camera->init)
+	const auto g_camera = fxm::get<camera_thread>();
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -1182,9 +1250,8 @@ s32 cellCameraRemoveNotifyEventQueue(u64 key)
 		return CELL_OK;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
-
-	if (!g_camera->init)
+	const auto g_camera = fxm::get<camera_thread>();
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -1203,9 +1270,8 @@ s32 cellCameraSetNotifyEventQueue2(u64 key, u64 source, u64 flag)
 		return CELL_OK;
 	}
 
-	const auto g_camera = g_fxo->get<camera_thread>();
-
-	if (!g_camera->init)
+	const auto g_camera = fxm::get<camera_thread>();
+	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
 	}
@@ -1277,7 +1343,7 @@ DECLARE(ppu_module_manager::cellCamera)("cellCamera", []()
 
 void camera_context::operator()()
 {
-	while (thread_ctrl::state() != thread_state::aborting && !Emu.IsStopped())
+	while (fxm::check<camera_thread>() == this && !Emu.IsStopped())
 	{
 		const s32 fps = info.framerate;
 
