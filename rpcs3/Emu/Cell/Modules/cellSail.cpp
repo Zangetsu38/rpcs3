@@ -641,23 +641,6 @@ s32 cellSailPlayerInitialize2(
 	return CELL_OK;
 }
 
-s32 cellSailPlayerFinalize(vm::ptr<CellSailPlayer> pSelf)
-{
-	cellSail.todo("cellSailPlayerFinalize(pSelf=*0x%x)", pSelf);
-
-	if (pSelf->sAdapter)
-	{
-		pSelf->sAdapter->registered = false;
-	}
-
-	if (pSelf->gAdapter)
-	{
-		pSelf->gAdapter->registered = false;
-	}
-
-	return CELL_OK;
-}
-
 s32 cellSailPlayerRegisterSource()
 {
 	UNIMPLEMENTED_FUNC(cellSail);
