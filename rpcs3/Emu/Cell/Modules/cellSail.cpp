@@ -641,23 +641,6 @@ s32 cellSailPlayerInitialize2(
 	return CELL_OK;
 }
 
-s32 cellSailPlayerFinalize(vm::ptr<CellSailPlayer> pSelf)
-{
-	cellSail.todo("cellSailPlayerFinalize(pSelf=*0x%x)", pSelf);
-
-	if (pSelf->sAdapter)
-	{
-		pSelf->sAdapter->registered = false;
-	}
-
-	if (pSelf->gAdapter)
-	{
-		pSelf->gAdapter->registered = false;
-	}
-
-	return CELL_OK;
-}
-
 s32 cellSailPlayerRegisterSource()
 {
 	UNIMPLEMENTED_FUNC(cellSail);
@@ -1134,7 +1117,6 @@ DECLARE(ppu_module_manager::cellSail)("cellSail", []()
 
 	REG_FUNC(cellSail, cellSailPlayerInitialize);
 	REG_FUNC(cellSail, cellSailPlayerInitialize2);
-	REG_FUNC(cellSail, cellSailPlayerFinalize);
 	REG_FUNC(cellSail, cellSailPlayerRegisterSource);
 	REG_FUNC(cellSail, cellSailPlayerGetRegisteredProtocols);
 	REG_FUNC(cellSail, cellSailPlayerSetSoundAdapter);
