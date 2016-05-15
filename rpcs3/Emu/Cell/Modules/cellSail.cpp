@@ -1134,7 +1134,6 @@ DECLARE(ppu_module_manager::cellSail)("cellSail", []()
 
 	REG_FUNC(cellSail, cellSailPlayerInitialize);
 	REG_FUNC(cellSail, cellSailPlayerInitialize2);
-	REG_FUNC(cellSail, cellSailPlayerFinalize);
 	REG_FUNC(cellSail, cellSailPlayerRegisterSource);
 	REG_FUNC(cellSail, cellSailPlayerGetRegisteredProtocols);
 	REG_FUNC(cellSail, cellSailPlayerSetSoundAdapter);
