@@ -52,3 +52,12 @@
 	path = 3rdparty/libusb
 	url = https://github.com/RPCS3/libusb.git
 	ignore = dirty
+[submodule "3rdparty/psmoveapi/psmoveapi"]
+	path = 3rdparty/psmoveapi/psmoveapi
+	url = https://github.com/thp/psmoveapi
+	ignore = dirty
+[submodule "3rdparty/psmoveapi/opencv"]
+	path = 3rdparty/psmoveapi/opencv
+	url = https://github.com/opencv/opencv/
+	branch = 2.4
+	ignore = dirty
