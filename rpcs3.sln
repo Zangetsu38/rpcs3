@@ -79,6 +79,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libusb", "libusb", "{6D8E86
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libusb-1.0 (static)", "3rdparty\libusb_static.vcxproj", "{349EE8F9-7D25-4909-AAF5-FF3FADE72187}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "psmoveapi_build", "3rdparty\psmoveapi\psmoveapi_build\psmoveapi_build.vcxproj", "{25C02D2F-CF99-4522-B02C-753EDDAB4042}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_build", "3rdparty\psmoveapi\opencv_build\opencv_build.vcxproj", "{52D00B5B-CBD2-427F-8AED-0DEA71039991}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libusb-tracker", "3rdparty\psmoveapi\libusb-tracker.vcxproj", "{AEB68627-B4E8-4B6D-A561-CB6C6C705026}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - LLVM|x64 = Debug - LLVM|x64
@@ -247,6 +253,21 @@ Global
 		{349EE8F9-7D25-4909-AAF5-FF3FADE72187}.Release - LLVM|x64.Build.0 = Release|x64
 		{349EE8F9-7D25-4909-AAF5-FF3FADE72187}.Release|x64.ActiveCfg = Release|x64
 		{349EE8F9-7D25-4909-AAF5-FF3FADE72187}.Release|x64.Build.0 = Release|x64
+		{25C02D2F-CF99-4522-B02C-753EDDAB4042}.Debug - LLVM|x64.ActiveCfg = Debug|x64
+		{25C02D2F-CF99-4522-B02C-753EDDAB4042}.Debug - MemLeak|x64.ActiveCfg = Debug|x64
+		{25C02D2F-CF99-4522-B02C-753EDDAB4042}.Debug|x64.ActiveCfg = Debug|x64
+		{25C02D2F-CF99-4522-B02C-753EDDAB4042}.Release - LLVM|x64.ActiveCfg = Release|x64
+		{25C02D2F-CF99-4522-B02C-753EDDAB4042}.Release|x64.ActiveCfg = Release|x64
+		{52D00B5B-CBD2-427F-8AED-0DEA71039991}.Debug - LLVM|x64.ActiveCfg = Debug|x64
+		{52D00B5B-CBD2-427F-8AED-0DEA71039991}.Debug - MemLeak|x64.ActiveCfg = Debug|x64
+		{52D00B5B-CBD2-427F-8AED-0DEA71039991}.Debug|x64.ActiveCfg = Debug|x64
+		{52D00B5B-CBD2-427F-8AED-0DEA71039991}.Release - LLVM|x64.ActiveCfg = Release|x64
+		{52D00B5B-CBD2-427F-8AED-0DEA71039991}.Release|x64.ActiveCfg = Release|x64
+		{AEB68627-B4E8-4B6D-A561-CB6C6C705026}.Debug - LLVM|x64.ActiveCfg = Debug|x64
+		{AEB68627-B4E8-4B6D-A561-CB6C6C705026}.Debug - MemLeak|x64.ActiveCfg = Debug|x64
+		{AEB68627-B4E8-4B6D-A561-CB6C6C705026}.Debug|x64.ActiveCfg = Debug|x64
+		{AEB68627-B4E8-4B6D-A561-CB6C6C705026}.Release - LLVM|x64.ActiveCfg = Release|x64
+		{AEB68627-B4E8-4B6D-A561-CB6C6C705026}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -268,6 +289,9 @@ Global
 		{A107C21C-418A-4697-BB10-20C3AA60E2E4} = {FA1E6C16-CA63-45F8-8D52-E21DF396BE36}
 		{939FE206-1182-ABC3-1234-FEAB88E98404} = {D16E245C-CC5A-4B9A-8BAB-1176F02C1631}
 		{349EE8F9-7D25-4909-AAF5-FF3FADE72187} = {6D8E86F7-84A0-45BA-ACC3-F02FC5545B3B}
+		{25C02D2F-CF99-4522-B02C-753EDDAB4042} = {B0AC29FD-7B01-4B5E-9C8D-0A081E4C5668}
+		{52D00B5B-CBD2-427F-8AED-0DEA71039991} = {B0AC29FD-7B01-4B5E-9C8D-0A081E4C5668}
+		{AEB68627-B4E8-4B6D-A561-CB6C6C705026} = {B0AC29FD-7B01-4B5E-9C8D-0A081E4C5668}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {06CC7920-E085-4B81-9582-8DE8AAD42510}
