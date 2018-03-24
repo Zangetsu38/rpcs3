@@ -1,6 +1,11 @@
 ﻿#pragma once
 
+#include "psmove.h"
 #include "Utilities/BEType.h"
+#include "Utilities/Timer.h"
+#include "Utilities/Thread.h"
+
+#include <map>
 
 static const float CELL_GEM_SPHERE_RADIUS_MM = 22.5f;
 
@@ -85,7 +90,7 @@ enum
 };
 
 // Video conversion flags
-enum
+enum CellGemVideoConvertFlagEnum
 {
 	CELL_GEM_AUTO_WHITE_BALANCE           = 0x1,
 	CELL_GEM_GAMMA_BOOST                  = 0x2,
@@ -94,7 +99,7 @@ enum
 };
 
 // Video conversion output formats
-enum
+enum CellGemVideoConvertFormatEnum
 {
 	CELL_GEM_NO_VIDEO_OUTPUT           = 1,
 	CELL_GEM_RGBA_640x480              = 2,
@@ -200,8 +205,8 @@ struct CellGemState
 struct CellGemVideoConvertAttribute
 {
 	be_t<s32> version;
-	be_t<s32> output_format;
-	be_t<s32> conversion_flags;
+	be_t<CellGemVideoConvertFormatEnum> output_format;
+	be_t<CellGemVideoConvertFlagEnum> conversion_flags;
 	be_t<f32> gain;
 	be_t<f32> red_gain;
 	be_t<f32> green_gain;
@@ -210,3 +215,43 @@ struct CellGemVideoConvertAttribute
 	be_t<u32> video_data_out;
 	u8 alpha;
 };
+
+// TODO: Maybe not needed, tracker seems to do led updating itself
+/*
+namespace move {
+namespace psmoveapi {
+
+class psmoveapi_thread final : public named_thread
+{
+public:
+	psmoveapi_thread() = default;
+	~psmoveapi_thread() override = default;
+
+	std::string get_name() const override { return "PSMoveAPI Thread"; }
+
+	semaphore<> mutex_poll;
+
+	std::map<u32, PSMove*> m_controllers;
+
+	void register_controller(u32 id, PSMove* controller)
+	{
+		m_controllers[id] = controller;
+	}
+
+	void unregister_controller(u32 id)
+	{
+		m_controllers.erase(id);
+	}
+
+protected:
+	// void on_spawn() override;
+	// void on_exit() override;
+	void on_task() override;
+public:
+	// void on_init(const std::shared_ptr<void>& _this) override;
+	// void on_stop() override;
+};
+
+} // namespace psmoveapi
+} // namespace move
+*/
