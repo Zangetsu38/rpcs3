@@ -32,6 +32,13 @@
 	url = https://github.com/RPCS3/hidapi
 	branch = master
 	ignore = dirty
+[submodule "3rdparty/psmoveapi"]
+	path = 3rdparty/psmoveapi
+	url = https://github.com/thp/psmoveapi
+[submodule "3rdparty/opencv"]
+	path = 3rdparty/opencv
+	url = https://github.com/opencv/opencv/
+	branch = 2.4
 [submodule "3rdparty/pugixml"]
 	path = 3rdparty/pugixml
 	url = https://github.com/zeux/pugixml

@@ -116,6 +116,7 @@ enum class move_handler
 {
 	null,
 	fake,
+	move,
 };
 
 enum class video_resolution

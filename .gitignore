@@ -39,6 +39,8 @@
 /llvm_build
 /Vulkan/Vulkan-build
 /Vulkan/glslang-build
+/3rdparty/opencv_build
+/3rdparty/psmoveapi_build
 
 !/bin
 /bin/*
