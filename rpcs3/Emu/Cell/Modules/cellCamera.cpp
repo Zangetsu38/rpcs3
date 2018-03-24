@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "cellCamera.h"
 
 #include "Emu/Cell/PPUModule.h"
@@ -6,6 +6,8 @@
 #include "Emu/IdManager.h"
 #include "Emu/Io/PadHandler.h"
 #include "Emu/System.h"
+
+#include "psmove_tracker.h"
 
 LOG_CHANNEL(cellCamera);
 
@@ -29,6 +31,23 @@ void fmt_class_string<camera_handler>::format(std::string& out, u64 arg)
 		{
 		case camera_handler::null: return "Null";
 		case camera_handler::fake: return "Fake";
+		case camera_handler::pseye: return "PS Eye";
+		}
+
+		return unknown;
+	});
+}
+
+template <>
+void fmt_class_string<pseye_number>::format(std::string& out, u64 arg)
+{
+	format_enum(out, arg, [](auto value)
+	{
+		switch (value)
+		{
+		case pseye_number::_1: return "PSEye #1";
+		case pseye_number::_2: return "PSEye #2";
+		case pseye_number::_3: return "PSEye #3";
 		}
 
 		return unknown;
@@ -268,13 +287,98 @@ u32 get_video_buffer_size(const CellCameraInfoEx& info)
 	return width * height * bpp;
 }
 
+namespace camera
+{
+	struct camera_t
+	{
+		struct PSMoveTrackerDeleter
+		{
+			void operator()(PSMoveTracker* p)
+			{
+				psmove_tracker_free(p);
+			}
+		};
+
+		// PSMoveAPI data
+		struct
+		{
+			std::unique_ptr<PSMoveTracker, PSMoveTrackerDeleter> tracker;
+			s32 connected_tracker;
+		} pseye;
+
+	};
+
+	namespace psmoveapi
+	{
+		namespace tracker
+		{
+			static void init(camera_t* camera)
+			{
+				auto shared_data = fxm::get_always<gem_camera_shared>();
+
+				int camera_num;
+				if (g_cfg.io.camera_number == pseye_number::_1)
+				{
+					camera_num = 0;
+				}
+				else if (g_cfg.io.camera_number == pseye_number::_2)
+				{
+					camera_num = 1;
+				}
+				else if (g_cfg.io.camera_number == pseye_number::_3)
+				{
+					camera_num = 2;
+				}
+
+				PSMoveTracker* tracker = psmove_tracker_new_with_camera(camera_num);
+				if (!tracker)
+				{
+					fmt::throw_exception("Couldn't initialize PSMoveAPI Tracker");
+					// TODO: Don't die
+				}
+				const auto connected = psmove_tracker_count_connected();
+				camera->pseye.connected_tracker = connected;
+
+				for (auto id = 0; id < connected; ++id)
+				{
+					psmove_tracker_set_exposure(tracker, PSMoveTracker_Exposure::Exposure_HIGH);
+				}
+				camera->pseye.tracker.reset(tracker);
+			}
+
+			static void end(camera_t* camera)
+			{
+				const auto tracker = camera->pseye.tracker.get();
+				psmove_tracker_free(tracker);
+			}
+
+			static void read(camera_t* camera, vm::ptr<u32>& frame_num, vm::ptr<u32>& bytes_read)
+			{
+				const auto tracker = camera->pseye.tracker.get();
+				psmove_tracker_update_image(tracker);
+				psmove_tracker_get_frame(tracker);
+			}
+
+			static void read_ex(camera_t* camera, vm::ptr<CellCameraReadEx>& read)
+			{
+				const auto tracker = camera->pseye.tracker.get();
+				psmove_tracker_update_image(tracker);
+				psmove_tracker_get_frame(tracker);
+			}
+		} // Namespace tracker
+
+	} // Namespace psmoveapi
+}
+
 // ************************
 // * cellCamera functions *
 // ************************
 
+using namespace camera;
+
 s32 cellCameraInit()
 {
-	cellCamera.todo("cellCameraInit()");
+	cellCamera.warning("cellCameraInit()");
 
 	// Start camera thread
 	const auto g_camera = fxm::make<camera_thread>("Camera Thread");
@@ -336,10 +440,18 @@ s32 cellCameraInit()
 	}
 
 	// TODO: Some other default attributes? Need to check the actual behaviour on a real PS3.
+	auto camera = fxm::make_always<camera_t>();
+	auto shared_data = fxm::get_always<gem_camera_shared>();
+	shared_data->attr.exchange(g_camera->attr);
 
-	if (g_cfg.io.camera == camera_handler::fake)
+	if (!(g_cfg.io.camera == camera_handler::null))
 	{
 		g_camera->is_attached = true;
+	}
+
+	if (g_cfg.io.camera == camera_handler::pseye)
+	{
+		camera::psmoveapi::tracker::init(camera.get());
 	}
 
 	return CELL_OK;
@@ -347,13 +459,19 @@ s32 cellCameraInit()
 
 s32 cellCameraEnd()
 {
-	cellCamera.todo("cellCameraEnd()");
+	cellCamera.fatal("cellCameraEnd()");
+	auto camera = fxm::make_always<camera_t>();
 
 	const auto g_camera = fxm::withdraw<camera_thread>();
 
 	if (!g_camera)
 	{
 		return CELL_CAMERA_ERROR_NOT_INIT;
+	}
+
+	if (g_cfg.io.camera == camera_handler::pseye)
+	{
+		camera::psmoveapi::tracker::end(camera.get());
 	}
 
 	// TODO: My tests hinted to this behavior, but I'm not sure, so I'll leave this commented
@@ -436,6 +554,9 @@ s32 cellCameraOpenEx(s32 dev_num, vm::ptr<CellCameraInfoEx> info)
 
 	std::tie(info->width, info->height) = get_video_resolution(*info);
 
+	auto shared_data = fxm::get_always<gem_camera_shared>();
+	shared_data->frame_rate.exchange(info->framerate);
+
 	g_camera->is_open = true;
 	g_camera->info = *info;
 
@@ -444,7 +565,7 @@ s32 cellCameraOpenEx(s32 dev_num, vm::ptr<CellCameraInfoEx> info)
 
 s32 cellCameraClose(s32 dev_num)
 {
-	cellCamera.todo("cellCameraClose(dev_num=%d)", dev_num);
+	cellCamera.fatal("cellCameraClose(dev_num=%d)", dev_num);
 
 	if (!check_dev_num(dev_num))
 	{
@@ -570,7 +691,7 @@ s32 cellCameraIsAttached(s32 dev_num)
 
 	bool is_attached = g_camera->is_attached;
 
-	if (g_cfg.io.camera == camera_handler::fake)
+	if (g_cfg.io.camera == camera_handler::fake | g_cfg.io.camera == camera_handler::pseye)
 	{
 		// "attach" camera here
 		// normally should be attached immediately after event queue is registered, but just to be sure
@@ -917,6 +1038,7 @@ s32 cellCameraRead(s32 dev_num, vm::ptr<u32> frame_num, vm::ptr<u32> bytes_read)
 {
 	cellCamera.todo("cellCameraRead(dev_num=%d, frame_num=*0x%x, bytes_read=*0x%x)", dev_num, frame_num, bytes_read);
 
+	auto camera = fxm::get<camera_t>();
 	vm::ptr<CellCameraReadEx> read_ex = vm::make_var<CellCameraReadEx>({});
 
 	s32 res = cellCameraReadEx(dev_num, read_ex);
@@ -936,12 +1058,18 @@ s32 cellCameraRead(s32 dev_num, vm::ptr<u32> frame_num, vm::ptr<u32> bytes_read)
 		*bytes_read = read_ex->bytesread;
 	}
 
+	if (g_cfg.io.camera == camera_handler::pseye)
+	{
+		camera::psmoveapi::tracker::read(camera.get(), frame_num, bytes_read);
+	}
+
 	return CELL_OK;
 }
 
 s32 cellCameraReadEx(s32 dev_num, vm::ptr<CellCameraReadEx> read)
 {
 	cellCamera.todo("cellCameraReadEx(dev_num=%d, read=0x%x)", dev_num, read);
+	auto camera = fxm::get<camera_t>();
 
 	const auto g_camera = fxm::get<camera_thread>();
 
@@ -975,6 +1103,11 @@ s32 cellCameraReadEx(s32 dev_num, vm::ptr<CellCameraReadEx> read)
 	if (!g_camera->is_streaming)
 	{
 		return CELL_CAMERA_ERROR_NOT_STARTED;
+	}
+
+	if (g_cfg.io.camera == camera_handler::pseye)
+	{
+		camera::psmoveapi::tracker::read_ex(camera.get(), read);
 	}
 
 	// can call cellCameraReset() and cellCameraStop() in some cases

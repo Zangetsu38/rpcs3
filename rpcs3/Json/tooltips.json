@@ -140,6 +140,7 @@
 		"mouseHandlerBox": "Some games support native mouse input.\nBasic will work in these cases.",
 		"cameraBox": "Camera support is not implemented, leave this on null.",
 		"cameraTypeBox": "Camera support is not implemented, leave this on unknown.",
+		"cameraNumberBox": "Camera number, leave this on #1 if you have only one camera.",
 		"moveBox": "PlayStation Move support.\nFake: Experimental! This maps Move controls to DS4 controller mappings."
 	},
 	"network": {

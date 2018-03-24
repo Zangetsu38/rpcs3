@@ -113,6 +113,7 @@ public:
 		MouseHandler,
 		Camera,
 		CameraType,
+		CameraNumber,
 		Move,
 
 		// Misc
@@ -321,6 +322,7 @@ private:
 		{ MouseHandler,    { "Input/Output", "Mouse"}},
 		{ Camera,          { "Input/Output", "Camera"}},
 		{ CameraType,      { "Input/Output", "Camera type"}},
+		{ CameraNumber,    { "Input/Output", "Camera PSEye number"}},
 		{ Move,            { "Input/Output", "Move" }},
 
 		// Misc

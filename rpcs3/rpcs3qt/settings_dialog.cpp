@@ -795,6 +795,9 @@ settings_dialog::settings_dialog(std::shared_ptr<gui_settings> guiSettings, std:
 	xemu_settings->EnhanceComboBox(ui->cameraBox, emu_settings::Camera);
 	SubscribeTooltip(ui->cameraBox, json_input["cameraBox"].toString());
 
+	xemu_settings->EnhanceComboBox(ui->cameraNumberBox, emu_settings::CameraNumber);
+	SubscribeTooltip(ui->cameraNumberBox, json_input["cameraNumberBox"].toString());
+
 	xemu_settings->EnhanceComboBox(ui->moveBox, emu_settings::Move);
 	SubscribeTooltip(ui->moveBox, json_input["moveBox"].toString());
 
