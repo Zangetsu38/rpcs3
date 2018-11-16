@@ -76,3 +76,16 @@ error_code sys_mmapper_map_shared_memory(ppu_thread&, u32 addr, u32 mem_id, u64 
 error_code sys_mmapper_search_and_map(ppu_thread&, u32 start_addr, u32 mem_id, u64 flags, vm::ptr<u32> alloc_addr);
 error_code sys_mmapper_unmap_shared_memory(ppu_thread&, u32 addr, vm::ptr<u32> mem_id);
 error_code sys_mmapper_enable_page_fault_notification(ppu_thread&, u32 start_addr, u32 event_queue_id);
+
+struct struct_339
+{
+	be_t<u32> a;
+	be_t<u32> b;
+	be_t<u32> c;
+	be_t<u32> d;
+	be_t<u32> e;
+	be_t<u32> f;
+};
+static_assert(sizeof(struct_339) == 0x18, "struct_339Test");
+error_code sys_mmapper_allocate_shared_memory_ext(u64 ipc_key, u32 size, u64 flags, u32 mc_id, vm::ptr<struct_339> entries, s32 entry_count, vm::ptr<u32> mem_id);
+error_code sys_mmapper_339(u64 a, s32 b, u32 flags, vm::ptr<struct_339> src, s32 count, vm::ptr<u32> mem_id);

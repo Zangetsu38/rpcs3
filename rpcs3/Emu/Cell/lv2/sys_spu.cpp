@@ -384,7 +384,7 @@ error_code sys_spu_thread_group_create(ppu_thread& ppu, vm::ptr<u32> id, u32 num
 
 	// TODO: max num value should be affected by sys_spu_initialize() settings
 
-	if (attr->nsize > 0x80 || !num || num > 6 || ((prio < 16 || prio > 255) && (attr->type != SYS_SPU_THREAD_GROUP_TYPE_EXCLUSIVE_NON_CONTEXT && attr->type != SYS_SPU_THREAD_GROUP_TYPE_COOPERATE_WITH_SYSTEM)))
+	if (attr->nsize > 0x80 || !num || num > 6 || ((prio < 0 || prio > 255) && (attr->type != SYS_SPU_THREAD_GROUP_TYPE_EXCLUSIVE_NON_CONTEXT && attr->type != SYS_SPU_THREAD_GROUP_TYPE_COOPERATE_WITH_SYSTEM)))
 	{
 		return CELL_EINVAL;
 	}

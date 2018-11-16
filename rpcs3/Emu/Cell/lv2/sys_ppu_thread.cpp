@@ -299,7 +299,12 @@ error_code _sys_ppu_thread_create(vm::ptr<u64> thread_id, vm::ptr<ppu_thread_par
 		return CELL_EFAULT;
 	}
 
-	if (prio < 0 || prio > 3071)
+	if (prio > 3071)
+	{
+		return CELL_EINVAL;
+	}
+	prio += 0x200;
+	if (prio < 0 /*|| prio < 0x200 && !access_check*/)
 	{
 		return CELL_EINVAL;
 	}
