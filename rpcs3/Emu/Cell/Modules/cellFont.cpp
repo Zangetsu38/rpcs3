@@ -787,7 +787,7 @@ s32 cellFontStatic()
 
 DECLARE(ppu_module_manager::cellFont)("cellFont", []()
 {
-
+	/*
 	REG_FUNC(cellFont, cellFontSetFontsetOpenMode);
 	REG_FUNC(cellFont, cellFontSetFontOpenMode);
 	REG_FUNC(cellFont, cellFontCreateRenderer);
