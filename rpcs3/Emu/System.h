@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "VFS.h"
 #include "Utilities/Atomic.h"
@@ -102,6 +102,14 @@ enum class camera_handler
 {
 	null,
 	fake,
+	pseye,
+};
+
+enum class pseye_number
+{
+	_1,
+	_2,
+	_3,
 };
 
 enum class fake_camera_type
@@ -117,6 +125,14 @@ enum class move_handler
 	null,
 	fake,
 	move,
+};
+
+enum class psmove_number
+{
+	_7,
+	_6,
+	_5,
+	_4,
 };
 
 enum class video_resolution
@@ -384,7 +400,7 @@ struct cfg_root : cfg::node
 		cfg::string emulator_dir{this, "$(EmulatorDir)"}; // Default (empty): taken from fs::get_config_dir()
 		cfg::string dev_hdd0{this, "/dev_hdd0/", "$(EmulatorDir)dev_hdd0/"};
 		cfg::string dev_hdd1{this, "/dev_hdd1/", "$(EmulatorDir)dev_hdd1/"};
-		cfg::string dev_flash{this, "/dev_flash/"};
+		cfg::string dev_flash{this, "/dev_flash/", "$(EmulatorDir)dev_flash/"};
 		cfg::string dev_usb000{this, "/dev_usb000/", "$(EmulatorDir)dev_usb000/"};
 		cfg::string dev_bdvd{this, "/dev_bdvd/"}; // Not mounted
 		cfg::string app_home{this, "/app_home/"}; // Not mounted
@@ -522,8 +538,12 @@ struct cfg_root : cfg::node
 		cfg::_enum<mouse_handler> mouse{this, "Mouse", mouse_handler::basic};
 		cfg::_enum<pad_handler> pad{this, "Controller", pad_handler::keyboard};
 		cfg::_enum<camera_handler> camera{this, "Camera", camera_handler::null};
+		cfg::_enum<pseye_number> camera_number{this, "Camera PSEye number", pseye_number::_1};
+		cfg::_bool force_init_tracker{this, "Force init tracker", false };
+		cfg::_bool force_reset_tracker{this, "Force reset tracker", false };
 		cfg::_enum<fake_camera_type> camera_type{this, "Camera type", fake_camera_type::unknown};
 		cfg::_enum<move_handler> move{this, "Move", move_handler::null};
+		cfg::_enum<psmove_number> move_number{this, "PSMove number", psmove_number::_7};
 
 	} io{this};
 

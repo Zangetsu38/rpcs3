@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Utilities/File.h"
 #include "Utilities/Log.h"
@@ -108,7 +108,11 @@ public:
 		MouseHandler,
 		Camera,
 		CameraType,
+		CameraNumber,
 		Move,
+		MoveNumber,
+		ForceIniTracker,
+		ForceResTracker,
 
 		// Misc
 		ExitRPCS3OnFinish,
@@ -309,7 +313,11 @@ private:
 		{ MouseHandler,    { "Input/Output", "Mouse"}},
 		{ Camera,          { "Input/Output", "Camera"}},
 		{ CameraType,      { "Input/Output", "Camera type"}},
+		{ CameraNumber,    { "Input/Output", "Camera PSEye number"}},
 		{ Move,            { "Input/Output", "Move" }},
+		{ MoveNumber,      { "Input/Output", "PSMove number"}},
+		{ ForceIniTracker, { "Input/Output", "Force init tracker"}},
+		{ ForceResTracker, { "Input/Output", "Force reset tracker"}},
 
 		// Misc
 		{ ExitRPCS3OnFinish,         { "Miscellaneous", "Exit RPCS3 when process finishes" }},

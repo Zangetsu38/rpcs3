@@ -29,6 +29,23 @@ void fmt_class_string<camera_handler>::format(std::string& out, u64 arg)
 		{
 		case camera_handler::null: return "Null";
 		case camera_handler::fake: return "Fake";
+		case camera_handler::pseye: return "PSEye";
+		}
+
+		return unknown;
+	});
+}
+
+template <>
+void fmt_class_string<pseye_number>::format(std::string& out, u64 arg)
+{
+	format_enum(out, arg, [](auto value)
+	{
+		switch (value)
+		{
+		case pseye_number::_1: return "PSEye #1";
+		case pseye_number::_2: return "PSEye #2";
+		case pseye_number::_3: return "PSEye #3";
 		}
 
 		return unknown;
@@ -340,7 +357,7 @@ s32 cellCameraInit()
 	auto shared_data = fxm::get_always<gem_camera_shared>();
 	shared_data->attr.exchange(g_camera->attr);
 
-	if (g_cfg.io.camera == camera_handler::fake)
+	if (g_cfg.io.camera == camera_handler::fake | g_cfg.io.camera == camera_handler::pseye)
 	{
 		g_camera->is_attached = true;
 	}
@@ -581,7 +598,7 @@ s32 cellCameraIsAttached(s32 dev_num)
 
 	bool is_attached = g_camera->is_attached;
 
-	if (g_cfg.io.camera == camera_handler::fake)
+	if (g_cfg.io.camera == camera_handler::fake | g_cfg.io.camera == camera_handler::pseye)
 	{
 		// "attach" camera here
 		// normally should be attached immediately after event queue is registered, but just to be sure

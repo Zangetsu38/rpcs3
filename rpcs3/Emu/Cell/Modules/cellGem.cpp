@@ -6,6 +6,7 @@
 #include "Emu/System.h"
 #include "Emu/Cell/PPUModule.h"
 #include "pad_thread.h"
+#include "Emu/Io/MouseHandler.h"
 #include "Utilities/Timer.h"
 
 #include "psmove.h"
@@ -26,6 +27,23 @@ void fmt_class_string<move_handler>::format(std::string& out, u64 arg)
 		case move_handler::null: return "Null";
 		case move_handler::fake: return "Fake";
 		case move_handler::move: return "PSMove";
+		}
+
+		return unknown;
+	});
+}
+
+template <>
+void fmt_class_string<psmove_number>::format(std::string& out, u64 arg)
+{
+	format_enum(out, arg, [](auto value)
+	{
+		switch (value)
+		{
+		case psmove_number::_7: return "PSMove #7";
+		case psmove_number::_6: return "PSMove #6";
+		case psmove_number::_5: return "PSMove #5";
+		case psmove_number::_4: return "PSMove #4";
 		}
 
 		return unknown;
@@ -77,6 +95,13 @@ namespace move
 				psmove_tracker_free(p);
 			}
 		};
+		struct PSMoveFusionDeleter
+		{
+			void operator()(PSMoveFusion* p)
+			{
+				psmove_fusion_free(p);
+			}
+		};
 
 		struct gem_controller
 		{
@@ -111,6 +136,7 @@ namespace move
 		struct
 		{
 			std::unique_ptr<PSMoveTracker, PSMoveTrackerDeleter> tracker;
+			std::unique_ptr<PSMoveFusion, PSMoveFusionDeleter> fusion;
 			s32 connected_tracker_controllers;
 		} psmove;
 
@@ -163,8 +189,27 @@ namespace move
 		// Assign status and port number
 		if (gem_num < connected_controllers)
 		{
+			
+			int psmove;
+			if (g_cfg.io.move_number == psmove_number::_7)
+			{
+				psmove = 7u;
+			}
+			else if (g_cfg.io.move_number == psmove_number::_6)
+			{
+				psmove = 6u;
+			}
+			else if (g_cfg.io.move_number == psmove_number::_5)
+			{
+				psmove = 5u;
+			}
+			else if (g_cfg.io.move_number == psmove_number::_4)
+			{
+				psmove = 4u;
+			}
+
 			controllers[gem_num].status = CELL_GEM_STATUS_READY;
-			controllers[gem_num].port = 7u - gem_num;
+			controllers[gem_num].port = psmove - gem_num;
 		}
 		else
 		{
@@ -269,7 +314,22 @@ namespace move
 				settings.camera_auto_white_balance = static_cast<PSMove_Bool>(gem->vc_attribute.conversion_flags & CELL_GEM_AUTO_WHITE_BALANCE);
 				// settings.camera_gain               = gem->vc_attribute.gain;
 
-				PSMoveTracker* tracker = psmove_tracker_new_with_settings(&settings);
+				int camera;
+				if (g_cfg.io.camera_number == pseye_number::_1)
+				{
+					camera = 0;
+				}
+				else if (g_cfg.io.camera_number == pseye_number::_2)
+				{
+					camera = 1;
+				}
+				else if (g_cfg.io.camera_number == pseye_number::_3)
+				{
+					camera = 2;
+				}
+
+				PSMoveTracker* tracker = psmove_tracker_new_with_camera_and_settings(camera, &settings);
+				PSMoveFusion* fusion = psmove_fusion_new(tracker, 1., 1000.);
 				if (!tracker)
 				{
 					fmt::throw_exception("Couldn't initialize PSMoveAPI Tracker");
@@ -289,6 +349,7 @@ namespace move
 					}
 				}
 				gem->psmove.tracker.reset(tracker);
+				gem->psmove.fusion.reset(fusion);
 			}
 
 			PSMoveTracker_Status enable(gem_t* gem, u32 gem_num)
@@ -297,6 +358,8 @@ namespace move
 				const auto handle = controller.psmove.handle.get();
 				const auto tracker = gem->psmove.tracker.get();
 				const auto color = controller.sphere_rgb;
+
+				psmove_reset_orientation(handle);
 
 				if (!tracker)
 				{
@@ -313,7 +376,8 @@ namespace move
 				}
 				else
 				{
-					tracker_status = psmove_tracker_enable_with_color(tracker, handle, color.r * 255, color.g * 255, color.b * 255);
+					tracker_status = psmove_tracker_enable_with_color(tracker, handle,
+						color.r * 255, color.g * 255, color.b * 255);
 				}
 
 				switch (tracker_status)
@@ -325,6 +389,46 @@ namespace move
 				default: break;
 				}
 				return tracker_status;
+			}
+
+			void force_enable(gem_t* gem, u32 gem_num)
+			{
+				const auto& controller = gem->controllers[gem_num];
+				const auto handle = controller.psmove.handle.get();
+				const auto tracker = gem->psmove.tracker.get();
+				const auto color = controller.sphere_rgb;
+
+				psmove_reset_orientation(handle);
+
+				// force enable tracker for controller
+				for (;;)
+				{
+					PSMoveTracker_Status tracker_status;
+
+					if (color.is_black())
+					{
+						tracker_status = psmove_tracker_enable(tracker, handle);
+					}
+					else
+					{
+						tracker_status = psmove_tracker_enable_with_color(tracker, handle,
+							color.r * 255, color.g * 255, color.b * 255);
+					}
+
+					if (tracker_status == Tracker_CALIBRATED)
+					{
+						cellGem.error("PSMoveAPI: Calibrated");
+						psmove_reset_orientation(handle);
+						gem->status_flags = CELL_GEM_FLAG_CALIBRATION_OCCURRED | CELL_GEM_FLAG_CALIBRATION_SUCCEEDED;
+						break;
+					}
+					else if (tracker_status == Tracker_CALIBRATION_ERROR)
+					{
+						cellGem.fatal("PSMoveAPI: Calibration failed (check lighting, visibility)");
+						gem->status_flags = CELL_GEM_FLAG_CALIBRATION_FAILED_CANT_FIND_SPHERE;
+						break;
+					}
+				}
 			}
 
 			void disable(gem_t* gem, u32 gem_num)
@@ -346,9 +450,123 @@ namespace move
 				{
 					const auto& handle = gem->controllers[id].psmove.handle.get();
 
-					psmove_tracker_update(tracker, handle);
+					psmove_tracker_update(tracker, NULL);
 				}
 			}
+
+			namespace map
+			{
+				static bool gem_state(const gem_t::gem_controller& controller, vm::ptr<CellGemState>& gem_state)
+				{
+					if (!gem_state)
+					{
+						return false;
+					}
+
+					const auto gem = fxm::get<gem_t>();
+					const auto handle = controller.psmove.handle.get();
+					const auto tracker = gem->psmove.tracker.get();
+					const auto fusion = gem->psmove.fusion.get();
+
+					s32 width, height;
+					psmove_tracker_get_size(tracker, &width, &height);
+
+					float fx, fy, z, x, y, r;
+
+					psmove_fusion_get_position(fusion, handle, &fx, &fy, &z);
+
+					psmove_tracker_get_position(tracker, handle, &x, &y, &r);
+					const auto distance = psmove_tracker_distance_from_radius(tracker, r) * 20; // cm->mm Multiplie distance x3
+					const auto fx3 = fx * 30, fy3 = -fy * 30, z3 = -z * 30;
+
+					gem_state->pos[0] = -x;
+					gem_state->pos[1] = y;
+					gem_state->pos[2] = distance;
+					gem_state->pos[3] = 0;
+
+					// RE5 cut, Epic Mickey
+					gem_state->vel[0] = 0;
+					gem_state->vel[1] = 0;
+					gem_state->vel[2] = 0;
+					gem_state->vel[3] = 0;
+
+					gem_state->accel[0] = 0;
+					gem_state->accel[1] = 0;
+					gem_state->accel[2] = 0;
+					gem_state->accel[3] = 0;
+
+					// Tumble Action rotate, Menu select Kung fuu rider
+					gem_state->angvel[0] = 0;
+					gem_state->angvel[1] = 0;
+					gem_state->angvel[2] = 0;
+					gem_state->angvel[3] = 0;
+
+					// Tumble Action rotate
+					gem_state->angaccel[0] = 0;
+					gem_state->angaccel[1] = 0;
+					gem_state->angaccel[2] = 0;
+					gem_state->angaccel[3] = 0;
+
+					gem_state->handle_pos[0] = fx3;
+					gem_state->handle_pos[1] = fy3;
+					gem_state->handle_pos[2] = z3;
+					gem_state->handle_pos[3] = 0;
+
+					gem_state->handle_vel[0] = 0;
+					gem_state->handle_vel[1] = 0;
+					gem_state->handle_vel[2] = 0;
+					gem_state->handle_vel[3] = 0;
+
+					gem_state->handle_accel[0] = 0;
+					gem_state->handle_accel[1] = 0;
+					gem_state->handle_accel[2] = 0;
+					gem_state->handle_accel[3] = 0;
+
+					//cellGem.fatal("accel[0]: %+01.3f accel[1]: %+01.3f [2]: %+01.3f", gem_state->accel[0], gem_state->accel[1], gem_state->accel[2]);
+					//cellGem.fatal("angvel[0]: %+01.3f, [1]: %+01.3f, [2]: %+01.3f, [3]: %+01.3f", gem_state->angvel[0], gem_state->angvel[1], gem_state->angvel[2], gem_state->angvel[3]);
+					//cellGem.fatal("handle_pos[0]: %+01.3f, [1]: %+01.3f, [2]: %+01.3f, [3]: %+01.3f", gem_state->handle_pos[0], gem_state->handle_pos[1], gem_state->handle_pos[2], gem_state->handle_pos[3]);
+					//cellGem.fatal("vel[0]: %+01.3f vel[1]: %+01.3f vel[2]: %+01.3f", gem_state->vel[0], gem_state->vel[1], gem_state->vel[2]);
+					//cellGem.fatal("pos[0]: %+01.3f, [1]: %+01.3f, [2]: %01.3f}", gem_state->pos[0], gem_state->pos[1], gem_state->pos[2]);
+
+					return true;
+				}
+
+				bool gem_image_state(vm::ptr<CellGemImageState>& gem_image_state, PSMoveTracker* tracker, PSMove* handle)
+				{
+					const auto shared_data = fxm::get_always<gem_camera_shared>();
+
+					s32 width, height;
+					psmove_tracker_get_size(tracker, &width, &height);
+
+					float x, y, radius;
+					
+					const auto age = psmove_tracker_get_position(tracker, handle, &x, &y, &radius) * 1000; // ms -> us
+					const auto distance = psmove_tracker_distance_from_radius(tracker, radius) * 20; // cm -> mm * 2
+
+					if (age == -1)
+					{
+						cellGem.fatal("PSMoveAPI: Error getting tracker position.");
+						return false;
+					}
+
+					gem_image_state->frame_timestamp = shared_data->frame_timestamp.load();
+					gem_image_state->timestamp = gem_image_state->frame_timestamp + age;
+					gem_image_state->u = x;
+					gem_image_state->v = y;
+					gem_image_state->r = radius;
+					gem_image_state->projectionx = x - width / 2;
+					gem_image_state->projectiony = -y + height / 2;
+					gem_image_state->distance = distance;
+					gem_image_state->visible = true;
+					gem_image_state->r_valid = true;
+
+					cellGem.fatal("u: %+01.3f, v: %+01.3f, r: %+01.3f, projX: %+01.3f, projY: %+01.3f, dist: %+01.3f}",
+						gem_image_state->u, gem_image_state->v, gem_image_state->r, gem_image_state->projectionx, gem_image_state->projectiony, gem_image_state->distance);
+
+					return true;
+				}
+			} // namespace map tracker
+
 		} // namespace tracker
 
 		bool poll(PSMove* controller_handle)
@@ -388,6 +606,12 @@ namespace move
 			psmove_update_leds(handle);
 		}
 
+		void reset_orientation(const gem_t::gem_controller& controller)
+		{
+			auto handle = controller.psmove.handle.get();
+			psmove_reset_orientation(handle);
+		}
+
 		static bool input_to_pad(const gem_t::gem_controller& controller, be_t<u16>& digital_buttons, be_t<u16>& analog_t)
 		{
 			const auto handle = controller.psmove.handle.get();
@@ -423,21 +647,17 @@ namespace move
 		{
 			const auto handle = controller.psmove.handle.get();
 
-			if (!psmove_has_calibration(handle))
+			if (!gem_state)
 			{
-				LOG_FATAL(HLE, "You need to calibrate your Move Motion controller!");
 				return false;
 			}
 
-			if (controller.psmove.enable_orientation)
-			{
-				float w, x, y, z;
-				psmove_get_orientation(handle, &w, &x, &y, &z);
-				gem_state->quat[0] = x;
-				gem_state->quat[1] = y;
-				gem_state->quat[2] = z;
-				gem_state->quat[3] = w;
-			}
+			float w, x, y, z;
+			psmove_get_orientation(handle, &w, &x, &y, &z);
+			gem_state->quat[0] = x;
+			gem_state->quat[1] = y;
+			gem_state->quat[2] = z;
+			gem_state->quat[3] = w;
 
 			const float temp = psmove_get_temperature(handle);
 			gem_state->temperature = temp;
@@ -495,40 +715,6 @@ namespace move
 			*gr_b[2] = gz - rgz;
 			*gr_b[3] = 0;
 
-			//	LOG_FATAL(GENERAL, "Accel: { x: %+01.3f y: %+01.3f z: %+01.3f w: %+01.3f }  Gyro: { x: %+01.3f y: %+01.3f z: %+01.3f w: %+01.3f }  ",
-			//	inertial_state->accelerometer[0], inertial_state->accelerometer[1], inertial_state->accelerometer[2], inertial_state->accelerometer[3],
-			//	inertial_state->gyro[0], inertial_state->gyro[1], inertial_state->gyro[2], inertial_state->gyro[3]);
-
-			return true;
-		}
-
-		bool input_to_image_state(vm::ptr<CellGemImageState>& image_state, PSMoveTracker* tracker, PSMove* handle)
-		{
-			const auto shared_data = fxm::get_always<gem_camera_shared>();
-
-			s32 width, height;
-			psmove_tracker_get_size(tracker, &width, &height);
-
-			float x, y, radius;
-			const auto age = psmove_tracker_get_position(tracker, handle, &x, &y, &radius) * 1000; // ms -> us
-			const auto distance = psmove_tracker_distance_from_radius(tracker, radius) * 10;            // cm -> mm
-
-			if (age == -1) 
-			{
-				LOG_ERROR(HLE, "PSMoveAPI: Error getting tracker position.");
-				return false;
-			}
-
-			image_state->frame_timestamp = shared_data->frame_timestamp.load();
-			image_state->timestamp = image_state->frame_timestamp + age;
-			image_state->visible = true;
-			image_state->u = x * width;
-			image_state->v = y * height;
-			image_state->r = radius;
-			image_state->r_valid = true;
-			image_state->distance = distance;
-			image_state->projectionx = 1;
-			image_state->projectiony = 1;
 
 			return true;
 		}
@@ -651,16 +837,11 @@ namespace move
 		{
 			const auto handler = fxm::get<pad_thread>();
 
-			if (!handler)
-			{
-				return false;
-			}
-
 			auto& pads = handler->GetPads();
 
 			const PadInfo& rinfo = handler->GetInfo();
 
-			if (port_no >= rinfo.max_connect)
+			if (!handler || port_no >= rinfo.max_connect || port_no >= rinfo.now_connect)
 			{
 				return false;
 			}
@@ -684,6 +865,75 @@ namespace move
 			return true;
 		}
 
+		namespace mouse
+		{
+			/**
+			* \brief Maps Move controller data (digital buttons, and analog Trigger data) to mouse input.
+			*        Move Button: Mouse1
+			*        Trigger:     Mouse2
+			* \param mouse_no Mouse index number to use
+			* \param digital_buttons Bitmask filled with CELL_GEM_CTRL_* values
+			* \param analog_t Analog value of Move's Trigger.
+			* \return true on success, false if mouse mouse_no is invalid
+			*/
+			static bool input_to_pad(const u32 mouse_no, be_t<u16>& digital_buttons, be_t<u16>& analog_t)
+			{
+				auto handler = fxm::get<MouseHandlerBase>();
+				std::lock_guard lock(handler->mutex);
+				if (!handler || mouse_no >= handler->GetMice().size())
+				{
+					cellGem.fatal("Mouse problem");
+					return false;
+				}
+
+				memset(&digital_buttons, 0, sizeof(digital_buttons));
+				MouseDataList& mouse_data_list = handler->GetDataList(mouse_no);
+
+				if (mouse_data_list.size())
+				{
+					const MouseData& mouse_data = mouse_data_list.front();
+					if (mouse_data.buttons & CELL_MOUSE_BUTTON_1)
+						digital_buttons |= CELL_GEM_CTRL_T;
+					if (mouse_data.buttons & CELL_MOUSE_BUTTON_2)
+						digital_buttons |= CELL_GEM_CTRL_MOVE;
+					if (mouse_data.buttons & CELL_MOUSE_BUTTON_3)
+						digital_buttons |= CELL_GEM_CTRL_CROSS;
+					if (mouse_data.buttons & CELL_MOUSE_BUTTON_3)
+						cellGem.fatal("Start pressed"),
+						digital_buttons |= CELL_GEM_CTRL_START;
+					analog_t = mouse_data.buttons & CELL_MOUSE_BUTTON_1 ? 0xFFFF : 0;
+					mouse_data_list.pop_front();
+				}
+				return true;
+			}
+			
+			static bool input_to_gem(const u32 mouse_no, vm::ptr<CellGemState>& gem_state)
+			{
+				const auto handler = fxm::get<MouseHandlerBase>();
+				if (!gem_state || !handler || mouse_no >= handler->GetMice().size())
+				{
+					return false;
+				}
+				auto& mouse = handler->GetMice().at(0);
+				f32 x_pos = mouse.x_pos;
+				f32 y_pos = mouse.y_pos;
+				static constexpr auto aspect_ratio = 1.2;
+				static constexpr auto screen_offset_x = 400.0;
+				static constexpr auto screen_offset_y = screen_offset_x * aspect_ratio;
+				static constexpr auto screen_scale = 3.0;
+				gem_state->pos[0] = screen_offset_x / screen_scale + x_pos / screen_scale;
+				gem_state->pos[1] = screen_offset_y / screen_scale + -y_pos / screen_scale * aspect_ratio;
+				gem_state->pos[2] = 2000;
+				gem_state->pos[3] = 0;
+				gem_state->handle_pos[0] = screen_offset_x / screen_scale + x_pos / screen_scale;
+				gem_state->handle_pos[1] = screen_offset_y / screen_scale + -y_pos / screen_scale * aspect_ratio;
+				gem_state->handle_pos[2] = 2000;
+				gem_state->handle_pos[3] = 0;
+				//cellGem.fatal("pos[0]: %+01.3f pos[1]: %+01.3f, pos[2]: %+01.3f}", gem_state->pos[0], gem_state->pos[1], gem_state->pos[2]);
+				//cellGem.fatal("handle_pos[0]: %+01.3f, [1]: %+01.3f, [2]: %+01.3f}", gem_state->handle_pos[0], gem_state->handle_pos[1], gem_state->handle_pos[2]);
+				return true;
+			}
+		} // namespace mouse
 	} // namespace map
 } // namespace move
 
@@ -695,7 +945,7 @@ using namespace move;
 
 s32 cellGemCalibrate(u32 gem_num)
 {
-	cellGem.todo("cellGemCalibrate(gem_num=%d)", gem_num);
+	cellGem.warning("cellGemCalibrate(gem_num=%d)", gem_num);
 	const auto gem = fxm::get<gem_t>();
 
 	if (!gem)
@@ -708,14 +958,15 @@ s32 cellGemCalibrate(u32 gem_num)
 		return CELL_GEM_ERROR_INVALID_PARAMETER;
 	}
 
+	gem->controllers[gem_num].calibrated_magnetometer = true;
+	auto& controller = gem->controllers[gem_num];
+
 	if (g_cfg.io.move == move_handler::fake)
 	{
-		gem->controllers[gem_num].calibrated_magnetometer = true;
 		gem->status_flags = CELL_GEM_FLAG_CALIBRATION_OCCURRED | CELL_GEM_FLAG_CALIBRATION_SUCCEEDED;
 	}
 	else if (g_cfg.io.move == move_handler::move)
 	{
-		gem->status_flags = CELL_GEM_FLAG_CALIBRATION_OCCURRED;
 
 		const auto tracking_result = move::psmoveapi::tracker::enable(gem.get(), gem_num);
 
@@ -724,7 +975,7 @@ s32 cellGemCalibrate(u32 gem_num)
 		case Tracker_NOT_CALIBRATED: break;
 		case Tracker_CALIBRATION_ERROR: gem->status_flags |= CELL_GEM_FLAG_CALIBRATION_FAILED_CANT_FIND_SPHERE | CELL_GEM_FLAG_CALIBRATION_FAILED_BRIGHT_LIGHTING; break;
 		case Tracker_CALIBRATED:
-		case Tracker_TRACKING: gem->status_flags |= CELL_GEM_FLAG_CALIBRATION_SUCCEEDED; break;
+		case Tracker_TRACKING: gem->status_flags |= CELL_GEM_FLAG_CALIBRATION_SUCCEEDED | CELL_GEM_FLAG_CALIBRATION_OCCURRED; break;
 		default:;
 		}
 	}
@@ -822,6 +1073,12 @@ s32 cellGemEnd()
 		return CELL_GEM_ERROR_UNINITIALIZED;
 	}
 
+	if (g_cfg.io.move == move_handler::fake &&
+		g_cfg.io.mouse == mouse_handler::basic)
+	{
+		fxm::remove<MouseHandlerBase>();
+	}
+
 	return CELL_OK;
 }
 
@@ -871,9 +1128,22 @@ s32 cellGemForceRGB(u32 gem_num, float r, float g, float b)
 	return CELL_OK;
 }
 
-s32 cellGemGetAccelerometerPositionInDevice()
+s32 cellGemGetAccelerometerPositionInDevice(u32 gem_num, vm::ptr<float> pos)
 {
-	UNIMPLEMENTED_FUNC(cellGem);
+	cellGem.todo("cellGemGetAccelerometerPositionInDevice(gem_num=%d, pos: +%f)", gem_num, pos);
+	const auto gem = fxm::get<gem_t>();
+
+	if (!gem)
+	{
+		return CELL_GEM_ERROR_UNINITIALIZED;
+	}
+
+	auto& controller = gem->controllers[gem_num];
+	if (g_cfg.io.move == move_handler::move)
+	{
+
+	}
+
 	return CELL_OK;
 }
 
@@ -962,9 +1232,9 @@ s32 cellGemGetHuePixels(vm::cptr<void> camera_frame, u32 hue, vm::ptr<u8> pixels
 	return CELL_OK;
 }
 
-s32 cellGemGetImageState(u32 gem_num, vm::ptr<CellGemImageState> image_state)
+s32 cellGemGetImageState(u32 gem_num, vm::ptr<CellGemImageState> gem_image_state)
 {
-	cellGem.todo("cellGemGetImageState(gem_num=%d, image_state=&0x%x)", gem_num, image_state);
+	cellGem.todo("cellGemGetImageState(gem_num=%d, image_state=&0x%x)", gem_num, gem_image_state);
 	const auto gem = fxm::get<gem_t>();
 
 	if (!gem)
@@ -972,7 +1242,7 @@ s32 cellGemGetImageState(u32 gem_num, vm::ptr<CellGemImageState> image_state)
 		return CELL_GEM_ERROR_UNINITIALIZED;
 	}
 
-	if (!check_gem_num(gem_num) || !image_state)
+	if (!check_gem_num(gem_num) || !gem_image_state)
 	{
 		return CELL_GEM_ERROR_INVALID_PARAMETER;
 	}
@@ -981,17 +1251,39 @@ s32 cellGemGetImageState(u32 gem_num, vm::ptr<CellGemImageState> image_state)
 	{
 		auto shared_data = fxm::get_always<gem_camera_shared>();
 
-		image_state->frame_timestamp = shared_data->frame_timestamp.load();
-		image_state->timestamp = image_state->frame_timestamp + 10; // arbitrarily define 10 usecs of frame processing
-		image_state->visible = true;
-		image_state->u = 0;
-		image_state->v = 0;
-		image_state->r = 20;
-		image_state->r_valid = true;
-		image_state->distance = 2 * 1000; // 2 meters away from camera
-		// TODO
-		image_state->projectionx = 1;
-		image_state->projectiony = 1;
+		if (g_cfg.io.mouse == mouse_handler::basic)
+		{
+			const auto handler = fxm::get<MouseHandlerBase>();
+			auto& mouse = handler->GetMice().at(0);
+
+			f32 x_pos = mouse.x_pos;
+			f32 y_pos = mouse.y_pos;
+
+			// Only game this seems to work on is PAIN, others use different functions
+			static constexpr auto aspect_ratio = 1.2;
+
+			static constexpr auto screen_offset_x = 400.0;
+			static constexpr auto screen_offset_y = screen_offset_x * aspect_ratio;
+
+			static constexpr auto screen_scale = 3.0;
+
+			gem_image_state->u = screen_offset_x / screen_scale + x_pos / screen_scale;
+			gem_image_state->v = screen_offset_y / screen_scale + y_pos / screen_scale * aspect_ratio;
+		}
+		else
+		{
+			gem_image_state->u = 0;
+			gem_image_state->v = 0;
+		}
+
+		gem_image_state->frame_timestamp = shared_data->frame_timestamp.load();
+		gem_image_state->timestamp = gem_image_state->frame_timestamp + 10;
+		gem_image_state->r = 10;
+		gem_image_state->projectionx = 1;
+		gem_image_state->projectiony = 1;
+		gem_image_state->distance = 2 * 1000; // 2 meters away from camera
+		gem_image_state->visible = true;
+		gem_image_state->r_valid = true;
 	}
 	else if (g_cfg.io.move == move_handler::move)
 	{
@@ -999,7 +1291,11 @@ s32 cellGemGetImageState(u32 gem_num, vm::ptr<CellGemImageState> image_state)
 		const auto handle = gem->controllers[gem_num].psmove.handle.get();
 
 		if (tracker && handle)
-			move::psmoveapi::input_to_image_state(image_state, tracker, handle);
+		{ 
+			move::psmoveapi::poll(handle);
+
+			move::psmoveapi::tracker::map::gem_image_state(gem_image_state, tracker, handle);
+		}
 	}
 
 	return CELL_OK;
@@ -1023,7 +1319,15 @@ s32 cellGemGetInertialState(u32 gem_num, u32 state_flag, u64 timestamp, vm::ptr<
 	// TODO(velocity): Abstract with gem state func
 	if (g_cfg.io.move == move_handler::fake)
 	{
-		move::map::ds3_input_to_pad(gem_num, inertial_state->pad.digitalbuttons, inertial_state->pad.analog_T);
+		if (g_cfg.io.mouse == mouse_handler::basic)
+		{
+			move::map::mouse::input_to_pad(gem_num, inertial_state->pad.digitalbuttons, inertial_state->pad.analog_T);
+		}
+		else
+		{
+			move::map::ds3_input_to_pad(gem_num, inertial_state->pad.digitalbuttons, inertial_state->pad.analog_T);
+		}
+
 		move::map::ds3_input_to_ext(gem_num, inertial_state->ext);
 	}
 	else if (g_cfg.io.move == move_handler::move)
@@ -1034,6 +1338,7 @@ s32 cellGemGetInertialState(u32 gem_num, u32 state_flag, u64 timestamp, vm::ptr<
 
 		move::psmoveapi::input_to_pad(handle, inertial_state->pad.digitalbuttons, inertial_state->pad.analog_T);
 		move::psmoveapi::input_to_inertial(handle, inertial_state);
+		move::map::ds3_input_to_ext(gem_num, inertial_state->ext);
 	}
 
 	// TODO: handle timestamp arg by storing previous states
@@ -1146,11 +1451,17 @@ s32 cellGemGetState(u32 gem_num, u32 flag, u64 time_parameter, vm::ptr<CellGemSt
 
 	if (g_cfg.io.move == move_handler::fake)
 	{
-		move::map::ds3_input_to_pad(gem_num, gem_state->pad.digitalbuttons, gem_state->pad.analog_T);
-		move::map::ds3_input_to_ext(gem_num, gem_state->ext);
+		if (g_cfg.io.mouse == mouse_handler::basic)
+		{
+			move::map::mouse::input_to_pad(gem_num, gem_state->pad.digitalbuttons, gem_state->pad.analog_T);
+			move::map::mouse::input_to_gem(gem_num, gem_state);
+		}
+		else
+		{
+			move::map::ds3_input_to_pad(gem_num, gem_state->pad.digitalbuttons, gem_state->pad.analog_T);
+		}
 
 		gem_state->quat[3] = 1.0;
-		gem_state->tracking_flags = CELL_GEM_TRACKING_FLAG_POSITION_TRACKED | CELL_GEM_TRACKING_FLAG_VISIBLE;
 	}
 	else if (g_cfg.io.move == move_handler::move)
 	{
@@ -1160,13 +1471,13 @@ s32 cellGemGetState(u32 gem_num, u32 flag, u64 time_parameter, vm::ptr<CellGemSt
 
 		move::psmoveapi::input_to_pad(handle, gem_state->pad.digitalbuttons, gem_state->pad.analog_T);
 		move::psmoveapi::input_to_gem(handle, gem_state);
-
-		// TODO(velocity)
-		gem_state->tracking_flags = CELL_GEM_TRACKING_FLAG_POSITION_TRACKED | CELL_GEM_TRACKING_FLAG_VISIBLE;
+		move::psmoveapi::tracker::map::gem_state(handle, gem_state);
 	}
 
 	if (g_cfg.io.move == move_handler::fake || g_cfg.io.move == move_handler::move)
 	{
+		move::map::ds3_input_to_ext(gem_num, gem_state->ext);
+		gem_state->tracking_flags = CELL_GEM_TRACKING_FLAG_POSITION_TRACKED | CELL_GEM_TRACKING_FLAG_VISIBLE;
 		gem_state->timestamp = gem->timer.GetElapsedTimeInMicroSec();
 
 		return CELL_OK;
@@ -1243,10 +1554,10 @@ s32 cellGemInit(vm::cptr<CellGemAttribute> attribute)
 	const auto gem = fxm::make_always<gem_t>();
 	//const auto gem = fxm::make<gem_t>();
 
-	//if (!gem)
-	//{
-	//	return CELL_GEM_ERROR_ALREADY_INITIALIZED;
-	//}
+	if (!gem)
+	{
+		return CELL_GEM_ERROR_ALREADY_INITIALIZED;
+	}
 
 	if (!attribute || !attribute->spurs_addr || attribute->max_connect > CELL_GEM_MAX_NUM)
 	{
@@ -1255,7 +1566,14 @@ s32 cellGemInit(vm::cptr<CellGemAttribute> attribute)
 
 	gem->attribute = *attribute;
 
-	if (g_cfg.io.move == move_handler::move)
+	if (g_cfg.io.move == move_handler::fake &&
+		g_cfg.io.mouse == mouse_handler::basic)
+	{
+		// init mouse handler
+		const auto handler = fxm::import_always<MouseHandlerBase>(Emu.GetCallbacks().get_mouse_handler);
+		handler->Init(std::min(attribute->max_connect.value(), static_cast<u32>(CELL_GEM_MAX_NUM)));
+	}
+	else if (g_cfg.io.move == move_handler::move)
 	{
 		// Initialize psmoveapi
 		move::psmoveapi::init(gem.get());
@@ -1316,7 +1634,7 @@ s32 cellGemIsTrackableHue(u32 hue)
 
 s32 cellGemPrepareCamera(s32 max_exposure, f32 image_quality)
 {
-	cellGem.todo("cellGemPrepareCamera(max_exposure=%d, image_quality=%f)", max_exposure, image_quality);
+	cellGem.warning("cellGemPrepareCamera(max_exposure=%d, image_quality=%f)", max_exposure, image_quality);
 	auto gem = fxm::get<gem_t>();
 
 	if (!gem)
@@ -1328,10 +1646,16 @@ s32 cellGemPrepareCamera(s32 max_exposure, f32 image_quality)
 	image_quality = std::clamp(image_quality, 0.0f, 1.0f);
 
 	// TODO: prepare camera
+	u32 gem_num;
 
 	if (g_cfg.io.move == move_handler::move)
 	{
 		move::psmoveapi::tracker::init(gem.get());
+
+		if (g_cfg.io.force_init_tracker)
+		{
+			move::psmoveapi::tracker::force_enable(gem.get(), gem_num);
+		}
 	}
 
 	return CELL_OK;
@@ -1371,7 +1695,7 @@ s32 cellGemPrepareVideoConvert(vm::cptr<CellGemVideoConvertAttribute> vc_attribu
 
 s32 cellGemReadExternalPortDeviceInfo(u32 gem_num, vm::ptr<u32> ext_id, vm::ptr<u8[CELL_GEM_EXTERNAL_PORT_DEVICE_INFO_SIZE]> ext_info)
 {
-	cellGem.todo("cellGemReset(gem_num=%d, ext_id=*0x%x, ext_info=%s)", gem_num, ext_id, ext_info);
+	cellGem.todo("cellGemReadExternalPortDeviceInfo(gem_num=%d, ext_id=*0x%x, ext_info=%s)", gem_num, ext_id, ext_info);
 	auto gem = fxm::get<gem_t>();
 
 	if (!gem)
@@ -1414,6 +1738,15 @@ s32 cellGemReset(u32 gem_num)
 
 	gem->reset_controller(gem.get(), gem_num);
 
+	auto& controller = gem->controllers[gem_num];
+	if (g_cfg.io.move == move_handler::move)
+	{
+		if (g_cfg.io.force_reset_tracker)
+		{ 
+			move::psmoveapi::tracker::force_enable(gem.get(), gem_num);
+		}
+	}
+
 	// TODO: is this correct?
 	gem->timer.Start();
 
@@ -1446,9 +1779,28 @@ s32 cellGemSetRumble(u32 gem_num, u8 rumble)
 	return CELL_OK;
 }
 
-s32 cellGemSetYaw()
+s32 cellGemSetYaw(u32 gem_num, f32 z_direction)
 {
-	UNIMPLEMENTED_FUNC(cellGem);
+	cellGem.warning("cellGemSetYaw(gem_num=gem_num=%d, z_direction=%+01.3f)", gem_num, z_direction);
+	auto gem = fxm::get<gem_t>();
+
+	if (!gem)
+	{
+		cellGem.fatal("SetYaw, gem_num uninitialized");
+		return CELL_GEM_ERROR_UNINITIALIZED;
+	}
+
+	if (!z_direction)
+	{
+		return CELL_GEM_ERROR_INVALID_PARAMETER;
+	}
+
+	auto& handle = gem->controllers[gem_num];
+	if (g_cfg.io.move == move_handler::move)
+	{
+		move::psmoveapi::reset_orientation(handle);
+	}
+
 	return CELL_OK;
 }
 
@@ -1543,6 +1895,42 @@ s32 cellGemWriteExternalPort(u32 gem_num, vm::ptr<u8[CELL_GEM_EXTERNAL_PORT_OUTP
 	return CELL_OK;
 }
 
+s32 libgem_0D03DBDC()
+{
+	UNIMPLEMENTED_FUNC(cellGem);
+	return CELL_OK;
+}
+s32 libgem_0E61785C()
+{
+	UNIMPLEMENTED_FUNC(cellGem);
+	return CELL_OK;
+}
+s32 libgem_155CE38B()
+{
+	UNIMPLEMENTED_FUNC(cellGem);
+	return CELL_OK;
+}
+s32 libgem_615698B8()
+{
+	UNIMPLEMENTED_FUNC(cellGem);
+	return CELL_OK;
+}
+s32 libgem_633C3196()
+{
+	UNIMPLEMENTED_FUNC(cellGem);
+	return CELL_OK;
+}
+s32 libgem_D7B1837D()
+{
+	UNIMPLEMENTED_FUNC(cellGem);
+	return CELL_OK;
+}
+s32 libgem_E2E65CFC()
+{
+	UNIMPLEMENTED_FUNC(cellGem);
+	return CELL_OK;
+}
+
 DECLARE(ppu_module_manager::cellGem)("libgem", []()
 {
 	REG_FUNC(libgem, cellGemCalibrate);
@@ -1582,4 +1970,13 @@ DECLARE(ppu_module_manager::cellGem)("libgem", []()
 	REG_FUNC(libgem, cellGemUpdateFinish);
 	REG_FUNC(libgem, cellGemUpdateStart);
 	REG_FUNC(libgem, cellGemWriteExternalPort);
+
+	// Need found real name
+	REG_FNID(libgem, 0x0D03DBDC, libgem_0D03DBDC);
+	REG_FNID(libgem, 0x0E61785C, libgem_0E61785C);
+	REG_FNID(libgem, 0x155CE38B, libgem_155CE38B);
+	REG_FNID(libgem, 0x615698B8, libgem_615698B8);
+	REG_FNID(libgem, 0x633C3196, libgem_633C3196);
+	REG_FNID(libgem, 0xD7B1837D, libgem_D7B1837D);
+	REG_FNID(libgem, 0xE2E65CFC, libgem_E2E65CFC);
 });

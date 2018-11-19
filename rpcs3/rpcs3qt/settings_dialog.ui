@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>752</width>
-    <height>576</height>
+    <height>596</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -36,7 +36,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="coreTab">
       <attribute name="title">
@@ -871,6 +871,12 @@
                 <property name="sizeType">
                  <enum>QSizePolicy::MinimumExpanding</enum>
                 </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
                </spacer>
               </item>
              </layout>
@@ -969,6 +975,16 @@
             <item>
              <widget class="QComboBox" name="moveBox"/>
             </item>
+            <item>
+             <widget class="QComboBox" name="moveNumberBox"/>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="forceResetTracker">
+              <property name="text">
+               <string>Force reset tracker</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -996,6 +1012,16 @@
            <layout class="QVBoxLayout" name="verticalLayout_31">
             <item>
              <widget class="QComboBox" name="cameraBox"/>
+            </item>
+            <item>
+             <widget class="QComboBox" name="cameraNumberBox"/>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="forceInitTracker">
+              <property name="text">
+               <string>Force init tracker</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

@@ -130,7 +130,11 @@
 		"keyboardHandlerBox": "Some games support native keyboard input.\nBasic will work in these cases.",
 		"mouseHandlerBox": "Some games support native mouse input.\nBasic will work in these cases.",
 		"cameraBox": "Camera support is not implemented, leave this on null.",
+		"cameraNumberBox": "Camera number, leave this on #1 if you have only one camera.",
+		"forceInitTracker": "Force initialization tracking PSMove.",
+		"forceResTracker": "Force reset tracking PSMove.\nFor game call only gemreset",
 		"cameraTypeBox": "Camera support is not implemented, leave this on unknown.",
+		"moveNumberBox": "Choose the number assigned to the PlayStation Move.\nPS3 Game can request assign PSMove on different number.",
 		"moveBox": "PlayStation Move support.\nFake: Experimental! This maps Move controls to DS4 controller mappings."
 	},
 	"network": {
