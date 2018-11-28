@@ -61,7 +61,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\3rdparty\libusb\libusb;..\3rdparty\zlib;..\llvm\include;..\llvm_build\include;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\3rdparty\zlib;..\llvm\include;..\llvm_build\include;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <PreBuildEvent>
       <Command>%windir%\sysnative\cmd.exe /c "$(SolutionDir)\Utilities\git-version-gen.cmd"</Command>
@@ -115,6 +115,7 @@
     <ClCompile Include="..\Utilities\VirtualMemory.cpp" />
     <ClCompile Include="Emu\Cell\lv2\sys_config.cpp" />
     <ClCompile Include="Emu\Cell\lv2\sys_bdemu.cpp" />
+    <ClCompile Include="Emu\Cell\lv2\sys_bluetooth.cpp" />
     <ClCompile Include="Emu\Cell\lv2\sys_btsetting.cpp" />
     <ClCompile Include="Emu\Cell\lv2\sys_console.cpp" />
     <ClCompile Include="Crypto\md5.cpp">
@@ -437,6 +438,7 @@
     <ClInclude Include="Crypto\utils.h" />
     <ClInclude Include="define_new_memleakdetect.h" />
     <ClInclude Include="Emu\Cell\lv2\sys_bdemu.h" />
+    <ClInclude Include="Emu\Cell\lv2\sys_bluetooth.h" />
     <ClInclude Include="Emu\Cell\lv2\sys_btsetting.h" />
     <ClInclude Include="Emu\Cell\lv2\sys_config.h" />
     <ClInclude Include="Emu\Cell\lv2\sys_console.h" />

@@ -361,8 +361,6 @@ void Emulator::Init()
 		make_path_verbose(dev_hdd1);
 		make_path_verbose(dev_usb);
 		make_path_verbose(dev_hdd0 + "game/");
-		make_path_verbose(dev_hdd0 + "game/TEST12345/");
-		make_path_verbose(dev_hdd0 + "game/TEST12345/USRDIR/");
 		make_path_verbose(dev_hdd0 + "game/.locks/");
 		make_path_verbose(dev_hdd0 + "home/");
 		make_path_verbose(dev_hdd0 + "home/" + m_usr + "/");

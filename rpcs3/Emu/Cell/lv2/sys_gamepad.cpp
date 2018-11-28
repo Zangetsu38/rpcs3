@@ -9,61 +9,61 @@ LOG_CHANNEL(sys_gamepad);
 
 u32 sys_gamepad_ycon_initalize(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_initalize(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_initalize(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
 u32 sys_gamepad_ycon_finalize(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_finalize(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_finalize(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
 u32 sys_gamepad_ycon_has_input_ownership(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_has_input_ownership(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_has_input_ownership(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
 u32 sys_gamepad_ycon_enumerate_device(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_enumerate_device(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_enumerate_device(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
 u32 sys_gamepad_ycon_get_device_info(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_get_device_info(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_get_device_info(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
 u32 sys_gamepad_ycon_read_raw_report(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_read_raw_report(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_read_raw_report(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
 u32 sys_gamepad_ycon_write_raw_report(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_write_raw_report(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_write_raw_report(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
 u32 sys_gamepad_ycon_get_feature(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_get_feature(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_get_feature(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
 u32 sys_gamepad_ycon_set_feature(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_set_feature(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_set_feature(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
 u32 sys_gamepad_ycon_is_gem(vm::ptr<uint8_t> in, vm::ptr<uint8_t> out)
 {
-	sys_gamepad.todo("sys_gamepad_ycon_is_gem(in=%d, out=%d) -> CELL_OK", in, out);
+	sys_gamepad.fatal("sys_gamepad_ycon_is_gem(in=%d, out=%d) -> CELL_OK", in, out);
 	return CELL_OK;
 }
 
@@ -109,7 +109,7 @@ u32 sys_gamepad_ycon_if(u64 packet_id, vm::ptr<uint8_t> in, vm::ptr<uint8_t> out
 		return CELL_OK;
 		break;
 	default:
-		sys_gamepad.error("sys_gamepad_ycon_if(packet_id=0x%x, in=%d, out=%d), unknown packet id", packet_id, in, out);
+		sys_gamepad.fatal("sys_gamepad_ycon_if(packet_id=0x%x, in=%d, out=%d), unknown packet id", packet_id, in, out);
 		break;
 	}
 

@@ -241,6 +241,8 @@
     <addaction name="separator"/>
     <addaction name="toolsDecryptSprxLibsAct"/>
     <addaction name="actionopen_rsx_capture"/>
+    <addaction name="separator"/>
+    <addaction name="bootVshAct"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -1012,6 +1014,11 @@
   <action name="actionManage_Skylanders_Portal">
    <property name="text">
     <string>Skylanders Portal</string>
+   </property>
+  </action>
+  <action name="bootVshAct">
+   <property name="text">
+    <string>Launch PS3 OS</string>
    </property>
   </action>
  </widget>

@@ -297,6 +297,34 @@ void main_window::BootElf()
 	Boot(path, "", true);
 }
 
+void main_window::BootVsh()
+{
+	bool stopped = false;
+
+	if (Emu.IsRunning())
+	{
+		Emu.Pause();
+		stopped = true;
+	}
+
+	QString filePath = ("dev_flash/vsh/module/vsh.self");
+
+	if (filePath == NULL)
+	{
+		if (stopped) Emu.Resume();
+		return;
+	}
+
+	// If we resolved the filepath earlier we would end up setting the last opened dir to the unwanted
+	// game folder in case of having e.g. a Game Folder with collected links to elf files.
+	// Don't set last path earlier in case of cancelled dialog
+	guiSettings->SetValue(gui::fd_boot_elf, filePath);
+	const std::string path = sstr(QFileInfo(filePath).canonicalFilePath());
+
+	LOG_NOTICE(LOADER, "Booting vsh...");
+	Boot(path, "",true);
+}
+
 void main_window::BootGame()
 {
 	bool stopped = false;
@@ -1152,6 +1180,7 @@ void main_window::CreateActions()
 void main_window::CreateConnects()
 {
 	connect(ui->bootElfAct, &QAction::triggered, this, &main_window::BootElf);
+	connect(ui->bootVshAct, &QAction::triggered, this, &main_window::BootVsh);
 	connect(ui->bootGameAct, &QAction::triggered, this, &main_window::BootGame);
 	connect(ui->actionopen_rsx_capture, &QAction::triggered, [this](){ BootRsxCapture(); });
 

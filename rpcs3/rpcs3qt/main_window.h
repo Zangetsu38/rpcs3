@@ -91,6 +91,7 @@ private Q_SLOTS:
 	void OnPlayOrPause();
 	void Boot(const std::string& path, const std::string& title_id = "", bool direct = false, bool add_only = false, bool force_global_config = false);
 	void BootElf();
+	void BootVsh();
 	void BootGame();
 	void BootRsxCapture(std::string path = "");
 	void DecryptSPRXLibraries();

@@ -124,6 +124,66 @@ void LIBUSB_CALL callback_transfer(struct libusb_transfer* transfer)
 
 	std::lock_guard lock(usbh->mutex);
 	if (!usbh->is_init)
+/*
+std::shared_ptr<usb_device> get_pseye() // TODO
+{
+	const auto pseye = std::make_shared<usb_device_emulated>(UsbDeviceDescriptor{ 0x0200, 0x00, 0x00, 0x00, 0x40, 0x1415, 0x2000, 0x0200, 0x01, 0x02, 0x00, 0x01 });
+
+	auto& config = pseye->device.add_node(UsbDescriptorNode(USB_DESCRIPTOR_CONFIG, UsbDeviceConfiguration{ 0x008E, 0x03, 0x01, 0x00, 0x80, 0xFA }));
+
+	// Vendor
+	auto& inter = config.add_node(UsbDescriptorNode(USB_DESCRIPTOR_INTERFACE, UsbDeviceInterface{ 0x00, 0x00, 0x03, 0xFF, 0x00, 0x00, 0x00 }));
+	inter.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT, UsbDeviceEndpoint{ 0x81, 0x02, 0x0200, 0x01 }));
+	inter.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT, UsbDeviceEndpoint{ 0x02, 0x02, 0x0200, 0x00 }));
+	inter.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT, UsbDeviceEndpoint{ 0x83, 0x03, 0x0040, 0x0A }));
+
+	config.add_node(UsbDescriptorNode(USB_DESCRIPTOR_INTERFACE, UsbDeviceInterface{ 0x01, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00 }));
+
+	inter.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceACInterfaceHeader{ 0x01, 0x0100, 0x002A, 0x01, 0x02 }));
+	inter.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceACInputTerminal{ 0x02, 0x01, 0x0201, 0x02, 0x04, 0x0000, 0x00, 0x00 }));
+	inter.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceACOutputTerminal{ 0x03, 0x02, 0x0101, 0x01, 0x03, 0x00 }));
+	inter.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceACFeatureUnit{ 0x06, 0x03, 0x01, 0x01, 0x00, 0x02, 0x02, 0x00 }));
+
+	// Audio
+	auto& inter3 = config.add_node(UsbDescriptorNode(USB_DESCRIPTOR_INTERFACE, UsbDeviceInterface{ 0x02, 0x00, 0x00, 0x00, 0x01, 0x02, 0x00 }));
+
+	config.add_node(UsbDescriptorNode(USB_DESCRIPTOR_INTERFACE, UsbDeviceInterface{ 0x02, 0x01, 0x01, 0x01, 0x02, 0x00, 0x00 }));
+
+	inter3.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceASInterface{ 0x01, 0x02, 0x01, 0x0001 }));
+	inter3.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceASFormatType1{ 0x02, 0x01, 0x04, 0x02, 0x10, 0x01, 0x003E80 }));
+	inter3.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT, UsbDeviceEndpointAudio{ 0x84, 0x05, 0x0300, 0x04, 0x00, 0x00 }));
+	inter3.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT_ASI, UsbDeviceASIsochronousDataEndpoint{ 0x01, 0x01, 0x00, 0x0000 }));
+
+	// Vendor
+	auto& inter4 = config.add_node(UsbDescriptorNode(USB_DESCRIPTOR_INTERFACE, UsbDeviceInterface{ 0x00, 0x00, 0x03, 0xFF, 0x00, 0x00, 0x00 }));
+	inter4.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT, UsbDeviceEndpoint{ 0x81, 0x02, 0x0040, 0x00 }));
+	inter4.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT, UsbDeviceEndpoint{ 0x02, 0x02, 0x0040, 0x00 }));
+	inter4.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT, UsbDeviceEndpoint{ 0x83, 0x03, 0x0008, 0x0A }));
+
+	// Audio
+	auto& inter5 = config.add_node(UsbDescriptorNode(USB_DESCRIPTOR_INTERFACE, UsbDeviceInterface{ 0x01, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00 }));
+	inter5.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceACInterfaceHeader{ 0x01, 0x0100, 0x001E, 0x01, 0x02 }));
+	inter5.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceACInputTerminal{ 0x02, 0x01, 0x0201, 0x02, 0x01, 0x0000, 0x00, 0x00 }));
+	inter5.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceACOutputTerminal{ 0x03, 0x02, 0x0101, 0x00, 0x01, 0x00 }));
+
+	// Audio
+	auto& inter6 = config.add_node(UsbDescriptorNode(USB_DESCRIPTOR_INTERFACE, UsbDeviceInterface{ 0x02, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00 }));
+
+	config.add_node(UsbDescriptorNode(USB_DESCRIPTOR_INTERFACE, UsbDeviceInterface{ 0x02, 0x01, 0x01, 0x01, 0x02, 0x00, 0x00 }));
+
+	inter6.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceASInterface{ 0x01, 0x02, 0x01, 0x0001 }));
+	inter6.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ACI, UsbDeviceASFormatType1{ 0x02, 0x01, 0x01, 0x02, 0x10, 0x01, 0x003E80 }));
+	inter6.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT, UsbDeviceEndpointAudio{ 0x84, 0x05, 0x0028, 0x04, 0x00, 0x00 }));
+	inter6.add_node(UsbDescriptorNode(USB_DESCRIPTOR_ENDPOINT_ASI, UsbDeviceASIsochronousDataEndpoint{ 0x01, 0x00, 0x00, 0x0000 }));
+		
+	pseye->total_size = pseye->device.get_size();
+
+	pseye->add_string("");
+	pseye->add_string("Nam Tai E&E Products Ltd. or OmniVision Technologies, Inc.");
+	pseye->add_string("USB Camera-B4.09.24.1 ");
+
+	return pseye;
+}*/
 		return;
 
 	usbh->transfer_complete(transfer);
@@ -182,6 +242,11 @@ usb_handler_thread::usb_handler_thread()
 		check_device(0x044F, 0xB65D, 0xB65D, "Thrustmaster FFB");
 		check_device(0x044F, 0xB65E, 0xB65E, "Thrustmaster TRS");
 		check_device(0x044F, 0xB660, 0xB660, "Thrustmaster T500 RS Gear Shift");
+
+		// PSEye&co
+		check_device(0x1415, 0x2000, 0x2000, "PS Eye Camera");
+		check_device(0x054C, 0x03D5, 0x03D5, "PS Move Controller");
+		check_device(0x054C, 0x042F, 0x042F, "Navigator Controller");
 	}
 
 	if (ndev > 0)

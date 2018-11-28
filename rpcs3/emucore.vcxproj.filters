@@ -803,6 +803,9 @@
     <ClCompile Include="Emu\Cell\lv2\sys_bdemu.cpp">
       <Filter>Emu\Cell\lv2</Filter>
     </ClCompile>
+    <ClCompile Include="Emu\Cell\lv2\sys_bluetooth.cpp">
+      <Filter>Emu\Cell\lv2</Filter>
+    </ClCompile>
     <ClCompile Include="Emu\Cell\lv2\sys_io.cpp">
       <Filter>Emu\Cell\lv2</Filter>
     <ClCompile Include="Emu\Io\Skylander.cpp">
@@ -1594,6 +1597,9 @@
       <Filter>Emu\Cell\lv2</Filter>
     </ClInclude>
     <ClInclude Include="Emu\Cell\lv2\sys_bdemu.h">
+      <Filter>Emu\Cell\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="Emu\Cell\lv2\sys_bluetooth.h">
       <Filter>Emu\Cell\lv2</Filter>
     </ClInclude>
     <ClInclude Include="Emu\Cell\lv2\sys_io.h">

@@ -222,6 +222,7 @@ error_code cellPadGetData(u32 port_no, vm::ptr<CellPadData> data)
 				case CELL_PAD_CTRL_L3:
 				case CELL_PAD_CTRL_START:
 				case CELL_PAD_CTRL_SELECT:
+				case CELL_PAD_CTRL_PS:
 				default: break;
 				}
 			}
@@ -660,6 +661,12 @@ error_code cellPadGetInfo(vm::ptr<CellPadInfo> info)
 			info->vendor_id[i] = 0x1CCF;
 			// Dance Dance Revolution Mat
 			info->product_id[i] = 0x0140;
+			break;
+		case CELL_PAD_PCLASS_TYPE_NAVIGATION:
+			// Sony Corp.
+			info->vendor_id[i] = 0x054C;
+			// Navigation Controller
+			info->product_id[i] = 0x042F;
 			break;
 		default:
 			// Sony Corp.

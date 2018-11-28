@@ -119,7 +119,7 @@ QCoreApplication* createApplication(int& argc, char* argv[])
 	if (find_arg(arg_headless, argc, argv))
 		return new headless_application(argc, argv);
 
-	bool use_high_dpi = true;
+	bool use_high_dpi = false;
 
 	const auto i_hdpi = find_arg(arg_high_dpi, argc, argv);
 	if (i_hdpi)

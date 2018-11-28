@@ -37,6 +37,7 @@
 #include "sys_gpio.h"
 #include "sys_config.h"
 #include "sys_bdemu.h"
+#include "sys_bluetooth.h"
 #include "sys_btsetting.h"
 #include "sys_console.h"
 #include "sys_hid.h"
@@ -560,25 +561,25 @@ const std::array<ppu_function_t, 1024> s_ppu_syscall_table
 	uns_func,                                               //576 (0x240)  UNS
 	null_func,//BIND_FUNC(sys_pad_manager_...)              //577 (0x241)  ROOT  PM
 	null_func,//BIND_FUNC(sys_bluetooth_...)                //578 (0x242)
-	null_func,//BIND_FUNC(sys_bluetooth_aud_serial_...)    //579 (0x243)
+	BIND_FUNC(sys_bluetooth_aud_serial_unk1),               // 579 (0x243)
 	null_func,//BIND_FUNC(sys_bluetooth_...)                //580 (0x244)  ROOT
 	null_func,//BIND_FUNC(sys_bluetooth_...)                //581 (0x245)  ROOT
 	null_func,//BIND_FUNC(sys_bluetooth_...)                //582 (0x246)  ROOT
-	null_func,//BIND_FUNC(sys_bt_read_firmware_version)     //583 (0x247)  ROOT
-	null_func,//BIND_FUNC(sys_bt_complete_wake_on_host)     //584 (0x248)  ROOT
-	null_func,//BIND_FUNC(sys_bt_disable_bluetooth)         //585 (0x249)
-	null_func,//BIND_FUNC(sys_bt_enable_bluetooth)          //586 (0x24A)
-	null_func,//BIND_FUNC(sys_bt_bccmd)                     //587 (0x24B)  ROOT
-	null_func,//BIND_FUNC(sys_bt_read_hq)                   //588 (0x24C)
-	null_func,//BIND_FUNC(sys_bt_hid_get_remote_status)     //589 (0x24D)
-	null_func,//BIND_FUNC(sys_bt_register_controller)       //590 (0x24E)  ROOT
-	null_func,//BIND_FUNC(sys_bt_clear_registered_contoller) //591 (0x24F)
-	null_func,//BIND_FUNC(sys_bt_connect_accept_controller) //592 (0x250)
-	null_func,//BIND_FUNC(sys_bt_get_local_bdaddress)       //593 (0x251)  ROOT
-	null_func,//BIND_FUNC(sys_bt_hid_get_data)              //594 (0x252)
-	null_func,//BIND_FUNC(sys_bt_hid_set_report)            //595 (0x253)
-	null_func,//BIND_FUNC(sys_bt_sched_log)                 //596 (0x254)
-	null_func,//BIND_FUNC(sys_bt_cancel_connect_accept_controller) //597 (0x255)
+	BIND_FUNC(sys_bt_read_firmware_version),                //583 (0x247)  ROOT
+	BIND_FUNC(sys_bt_complete_wake_on_host),                //584 (0x248)  ROOT
+	BIND_FUNC(sys_bt_disable_bluetooth),                    //585 (0x249)
+	BIND_FUNC(sys_bt_enable_bluetooth),                     //586 (0x24A)
+	BIND_FUNC(sys_bt_bccmd),                                //587 (0x24B)  ROOT
+	BIND_FUNC(sys_bt_read_hq),                                //588 (0x24C)
+	BIND_FUNC(sys_bt_hid_get_remote_status),                //589 (0x24D)
+	BIND_FUNC(sys_bt_register_controller),                  //590 (0x24E)  ROOT
+	BIND_FUNC(sys_bt_clear_registered_contoller),            //591 (0x24F)
+	BIND_FUNC(sys_bt_connect_accept_controller),            //592 (0x250)
+	BIND_FUNC(sys_bt_get_local_bdaddress),                    //593 (0x251)  ROOT
+	BIND_FUNC(sys_bt_hid_get_data),                            //594 (0x252)
+	BIND_FUNC(sys_bt_hid_set_report),                        //595 (0x253)
+	BIND_FUNC(sys_bt_sched_log),                            //596 (0x254)
+	BIND_FUNC(sys_bt_cancel_connect_accept_controller),	    //597 (0x255)
 	null_func,//BIND_FUNC(sys_bluetooth_...)                //598 (0x256)  ROOT
 	null_func,//BIND_FUNC(sys_bluetooth_...)                //599 (0x257)  ROOT
 	BIND_FUNC(sys_storage_open),                            //600 (0x258)  ROOT

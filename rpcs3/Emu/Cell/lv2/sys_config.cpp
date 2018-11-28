@@ -96,9 +96,28 @@ void lv2_config::initialize()
 		0x00, 0x00  // 26
 	};
 
+	// PSMove
+	const u8 hid_info2[0x1a] = {
+		0x01, 0x01, //  2 unk
+		0x02, 0x02, //  4
+		0x00, 0x00, //  6
+		0x00, 0x00, //  8
+		0x00, 0x00, // 10
+		0x05, 0x4c, // 12 vid
+		0x03, 0xd5, // 14 pid
+		0x00, 0x10, // 16 unk2
+		0x91, 0x88, // 18
+		0x04, 0x00, // 20
+		0x00, 0x07, // 22
+		0x00, 0x00, // 24
+		0x00, 0x00  // 26
+	};
+
 	// user_id for the padmanager seems to signify the controller port number, and the buffer contains some sort of HID descriptor
 	lv2_config_service::create(SYS_CONFIG_SERVICE_PADMANAGER , 0, 1, 0, hid_info, 0x1a)->notify();
 	lv2_config_service::create(SYS_CONFIG_SERVICE_PADMANAGER2, 0, 1, 0, hid_info, 0x1a)->notify();
+	lv2_config_service::create(SYS_CONFIG_SERVICE_PADMANAGER, 6, 2, 0, hid_info2, 0x1b)->notify();
+	lv2_config_service::create(SYS_CONFIG_SERVICE_PADMANAGER2, 6, 2, 0, hid_info2, 0x1b)->notify();
 }
 
 void lv2_config::add_service_event(const std::shared_ptr<lv2_config_service_event>& event)
