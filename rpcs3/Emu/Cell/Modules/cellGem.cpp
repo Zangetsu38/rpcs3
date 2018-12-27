@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "cellGem.h"
 
 #include "cellCamera.h"
@@ -271,11 +271,11 @@ static bool ds3_input_to_ext(const u32 port_no, CellGemExtPortData& ext)
 */
 static bool mouse_input_to_pad(const u32 mouse_no, be_t<u16>& digital_buttons, be_t<u16>& analog_t)
 {
-	const auto handler = fxm::get<MouseHandlerBase>();
-	semaphore_lock lock(handler->mutex);
-
+	auto handler = fxm::get<MouseHandlerBase>();
+	std::lock_guard lock(handler->mutex);
 	if (!handler || mouse_no >= handler->GetMice().size())
 	{
+		cellGem.fatal("Mouse problem");
 		return false;
 	}
 
@@ -294,7 +294,7 @@ static bool mouse_input_to_pad(const u32 mouse_no, be_t<u16>& digital_buttons, b
 			digital_buttons |= CELL_GEM_CTRL_MOVE;
 
 		if (mouse_data.buttons & CELL_MOUSE_BUTTON_3)
-			digital_buttons |= CELL_GEM_CTRL_CROSS;
+			digital_buttons |= CELL_GEM_CTRL_SQUARE;
 
 		if (mouse_data.buttons & CELL_MOUSE_BUTTON_3)
 			cellGem.fatal("Start pressed"),
