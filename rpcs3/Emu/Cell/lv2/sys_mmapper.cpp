@@ -584,7 +584,7 @@ error_code sys_mmapper_339(u64 ipc_key, s32 size, u32 flags, vm::ptr<struct_339>
 	// TODO figure out what it does with the struct - it is stored ina linked list when the memory is created
 
 	// Get "default" memory container
-	const auto dct = fxm::get_always<lv2_memory_container>();
+	const auto dct = fxm::get<lv2_memory_container>();
 
 	if (!dct->take(size))
 	{
