@@ -404,7 +404,7 @@ target_link_libraries(rpcs3_emu
 		3rdparty::libusb
 	PRIVATE
 		3rdparty::gsl 3rdparty::xxhash
-		3rdparty::dx12)
+		3rdparty::dx12 3rdparty::glew)
 
 
 # Setup cotire
