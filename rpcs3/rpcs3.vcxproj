@@ -104,24 +104,24 @@
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug - LLVM|x64'">true</IgnoreImportLibrary>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\3rdparty\hidapi\hidapi;.\;..\;..\asmjit\src;..\3rdparty\yaml-cpp\include;..\3rdparty\ffmpeg\WindowsInclude;..\3rdparty\cereal\include;..\3rdparty\ffmpeg\Windows\x86_64\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(UniversalCRT_IncludePath);..\3rdparty\minidx12\Include;..\3rdparty\GSL\include;..\3rdparty\libpng;..\3rdparty\GL;..\3rdparty\stblib;..\3rdparty\OpenAL\include;..\3rdparty\pugixml\src;..\3rdparty\Optional;..\3rdparty\discord-rpc\include;..\3rdparty\zlib</IncludePath>
+    <IncludePath>..\3rdparty\hidapi\hidapi;.\;..\;..\asmjit\src;..\3rdparty\yaml-cpp\include;..\3rdparty\ffmpeg\WindowsInclude;..\3rdparty\cereal\include;..\3rdparty\ffmpeg\Windows\x86_64\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(UniversalCRT_IncludePath);..\3rdparty\minidx12\Include;..\3rdparty\GSL\include;..\3rdparty\libpng;..\3rdparty\libusb\libusb;..\3rdparty\GL;..\3rdparty\stblib;..\3rdparty\OpenAL\include;..\3rdparty\pugixml\src;..\3rdparty\Optional;..\3rdparty\discord-rpc\include;..\3rdparty\zlib</IncludePath>
     <LibraryPath>$(SolutionDir)lib\$(Configuration)-$(Platform)\;$(UniversalCRT_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - LLVM|x64'">
-    <IncludePath>..\3rdparty\hidapi\hidapi;.\;..\;..\asmjit\src;..\3rdparty\yaml-cpp\include;..\3rdparty\ffmpeg\WindowsInclude;..\3rdparty\cereal\include;..\3rdparty\ffmpeg\Windows\x86_64\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(UniversalCRT_IncludePath);..\3rdparty\minidx12\Include;..\3rdparty\GSL\include;..\3rdparty\libpng;..\3rdparty\GL;..\3rdparty\stblib;..\3rdparty\OpenAL\include;..\3rdparty\pugixml\src;..\3rdparty\Optional;..\3rdparty\discord-rpc\include;..\3rdparty\zlib</IncludePath>
+    <IncludePath>..\3rdparty\hidapi\hidapi;.\;..\;..\asmjit\src;..\3rdparty\yaml-cpp\include;..\3rdparty\ffmpeg\WindowsInclude;..\3rdparty\cereal\include;..\3rdparty\ffmpeg\Windows\x86_64\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(UniversalCRT_IncludePath);..\3rdparty\minidx12\Include;..\3rdparty\GSL\include;..\3rdparty\libpng;..\3rdparty\libusb\libusb;..\3rdparty\GL;..\3rdparty\stblib;..\3rdparty\OpenAL\include;..\3rdparty\pugixml\src;..\3rdparty\Optional;..\3rdparty\discord-rpc\include;..\3rdparty\zlib</IncludePath>
     <LibraryPath>$(SolutionDir)lib\Debug-x64;$(SolutionDir)lib\$(Configuration)-$(Platform)\;$(UniversalCRT_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(SolutionDir)lib\$(Configuration)-$(Platform)\;$(UniversalCRT_LibraryPath_x64);$(LibraryPath)</LibraryPath>
-    <IncludePath>..\3rdparty\hidapi\hidapi;.\;..\;..\asmjit\src;..\3rdparty\yaml-cpp\include;..\3rdparty\ffmpeg\WindowsInclude;..\3rdparty\cereal\include;..\3rdparty\ffmpeg\Windows\x86_64\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(UniversalCRT_IncludePath);..\3rdparty\minidx12\Include;..\3rdparty\GSL\include;..\3rdparty\libpng;..\3rdparty\GL;..\3rdparty\stblib;..\3rdparty\OpenAL\include;..\3rdparty\pugixml\src;..\3rdparty\Optional;..\3rdparty\discord-rpc\include;..\3rdparty\zlib</IncludePath>
+    <IncludePath>..\3rdparty\hidapi\hidapi;.\;..\;..\asmjit\src;..\3rdparty\yaml-cpp\include;..\3rdparty\ffmpeg\WindowsInclude;..\3rdparty\cereal\include;..\3rdparty\ffmpeg\Windows\x86_64\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(UniversalCRT_IncludePath);..\3rdparty\minidx12\Include;..\3rdparty\GSL\include;..\3rdparty\libpng;..\3rdparty\libusb\libusb;..\3rdparty\GL;..\3rdparty\stblib;..\3rdparty\OpenAL\include;..\3rdparty\pugixml\src;..\3rdparty\Optional;..\3rdparty\discord-rpc\include;..\3rdparty\zlib</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release - LLVM|x64'">
     <LibraryPath>$(SolutionDir)lib\Release-x64;$(SolutionDir)lib\$(Configuration)-$(Platform)\;$(UniversalCRT_LibraryPath_x64);$(LibraryPath)</LibraryPath>
-    <IncludePath>..\3rdparty\hidapi\hidapi;.\;..\;..\asmjit\src;..\3rdparty\yaml-cpp\include;..\3rdparty\ffmpeg\WindowsInclude;..\3rdparty\cereal\include;..\3rdparty\ffmpeg\Windows\x86_64\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(UniversalCRT_IncludePath);..\3rdparty\minidx12\Include;..\3rdparty\GSL\include;..\3rdparty\libpng;..\3rdparty\GL;..\3rdparty\stblib;..\3rdparty\OpenAL\include;..\3rdparty\pugixml\src;..\3rdparty\Optional;..\3rdparty\discord-rpc\include;..\3rdparty\zlib</IncludePath>
+    <IncludePath>..\3rdparty\hidapi\hidapi;.\;..\;..\asmjit\src;..\3rdparty\yaml-cpp\include;..\3rdparty\ffmpeg\WindowsInclude;..\3rdparty\cereal\include;..\3rdparty\ffmpeg\Windows\x86_64\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(UniversalCRT_IncludePath);..\3rdparty\minidx12\Include;..\3rdparty\GSL\include;..\3rdparty\libpng;..\3rdparty\libusb\libusb;..\3rdparty\GL;..\3rdparty\stblib;..\3rdparty\OpenAL\include;..\3rdparty\pugixml\src;..\3rdparty\Optional;..\3rdparty\discord-rpc\include;..\3rdparty\zlib</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\3rdparty\libusb\libusb;$(VULKAN_SDK)\Include;..\3rdparty\minidx12\Include;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015;.\QTGeneratedFiles\$(ConfigurationName);.\QTGeneratedFiles;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtWinExtras;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;..\3rdparty\minidx12\Include;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015;.\QTGeneratedFiles\$(ConfigurationName);.\QTGeneratedFiles;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtWinExtras;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -175,7 +175,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release - LLVM|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\3rdparty\libusb\libusb;$(VULKAN_SDK)\Include;..\3rdparty\minidx12\Include;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015;.\QTGeneratedFiles\$(ConfigurationName);.\QTGeneratedFiles;$(QTDIR)\include\QtWinExtras;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;..\3rdparty\minidx12\Include;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015;.\QTGeneratedFiles\$(ConfigurationName);.\QTGeneratedFiles;$(QTDIR)\include\QtWinExtras;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -229,7 +229,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\3rdparty\libusb\libusb;$(VULKAN_SDK)\Include;..\3rdparty\minidx12\Include;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015;.\QTGeneratedFiles\$(ConfigurationName);.\QTGeneratedFiles;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtWinExtras;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;..\3rdparty\minidx12\Include;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015;.\QTGeneratedFiles\$(ConfigurationName);.\QTGeneratedFiles;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtWinExtras;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -284,7 +284,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug - LLVM|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\3rdparty\libusb\libusb;$(VULKAN_SDK)\Include;..\3rdparty\minidx12\Include;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015;.\QTGeneratedFiles\$(ConfigurationName);.\QTGeneratedFiles;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtWinExtras;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;..\3rdparty\minidx12\Include;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015;.\QTGeneratedFiles\$(ConfigurationName);.\QTGeneratedFiles;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtWinExtras;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
