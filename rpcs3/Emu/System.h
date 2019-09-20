@@ -127,6 +127,7 @@ enum class move_handler
 {
 	null,
 	fake,
+	mouse,
 	move,
 };
 
