@@ -584,7 +584,7 @@ error_code sys_mmapper_339(u64 ipc_key, s32 size, u32 flags, vm::ptr<struct_339>
 	// TODO figure out what it does with the struct - it is stored ina linked list when the memory is created
 
 	// Get "default" memory container
-	const auto dct = fxm::get<lv2_memory_container>();
+	const auto dct = g_fxo->get<lv2_memory_container>();
 
 	if (!dct->take(size))
 	{
@@ -693,7 +693,7 @@ error_code sys_mmapper_allocate_shared_memory_ext(u64 ipc_key, u32 size, u64 fla
 	}
 
 	// Generate a new mem ID
-	*mem_id = idm::make<lv2_obj, lv2_memory>(size, flags & SYS_MEMORY_PAGE_SIZE_1M ? 0x100000 : 0x10000, flags, ct.ptr);
+	*mem_id = idm::make<lv2_obj, lv2_memory>(size, flags & SYS_MEMORY_PAGE_SIZE_1M ? 0x100000 : 0x10000, flags, ct.ptr.get());
 
 	return CELL_OK;
 }
